@@ -1,0 +1,6 @@
+{
+  "name": "netscapeit",
+  "description": "A 1999 Netscape-inspired web browser powered by the Xserver HTTP/1.0 virtual hosting engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

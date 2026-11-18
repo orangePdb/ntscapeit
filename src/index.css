@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Public Sans", "MS Sans Serif", "Tahoma", sans-serif;
+  }
+}
+
+/* Classic 1999 Win98 / Netscape 4.x 3D bevel utilities */
+.bevel-out {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  box-shadow: inset -1px -1px 0 #808080, inset 1px 1px 0 #dfdfdf;
+}
+
+.bevel-out-sm {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+}
+
+.bevel-in {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+}
+
+.bevel-in-sm {
+  border-top: 1px solid #808080;
+  border-left: 1px solid #808080;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+}
+
+.netscape-btn {
+  border: 1px solid transparent;
+  background-color: #c0c0c0;
+  transition: none;
+}
+
+.netscape-btn:hover:not(:disabled) {
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+}
+
+.netscape-btn:active:not(:disabled),
+.netscape-btn-active {
+  border-top: 1px solid #808080 !important;
+  border-left: 1px solid #808080 !important;
+  border-right: 1px solid #ffffff !important;
+  border-bottom: 1px solid #ffffff !important;
+  background-color: #b5b5b5;
+}
+
+.netscape-raised-btn {
+  background-color: #c0c0c0;
+  border-top: 1px solid #ffffff;
+  border-left: 1px solid #ffffff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  box-shadow: inset -1px -1px 0 #808080;
+}
+
+.netscape-raised-btn:active:not(:disabled) {
+  border-top: 1px solid #404040;
+  border-left: 1px solid #404040;
+  border-right: 1px solid #ffffff;
+  border-bottom: 1px solid #ffffff;
+  box-shadow: inset 1px 1px 0 #808080;
+  transform: translate(1px, 1px);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.font-mono-retro {
+  font-family: "IBM Plex Mono", "Courier New", monospace;
+}
+
+@keyframes throbber-stars {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-6px, 6px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-12px, 12px);
+    opacity: 0.2;
+  }
+}
+
+.animate-throbber-stars {
+  animation: throbber-stars 0.7s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-throbber-stars {
+    animation: none;
+  }
+}

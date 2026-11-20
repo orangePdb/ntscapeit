@@ -12,7 +12,7 @@
 
 </div>
 
-<h2>📡 About Netscapeit</h2>
+<h2>About Netscapeit</h2>
 
 <p>
 Netscapeit is a retro-inspired web browser project built around the
@@ -25,7 +25,7 @@ Netscape Navigator era, with support for a companion server called
 <b>Xserver</b>.
 </p>
 
-<h2>🖥️ Features</h2>
+<h2>Features</h2>
 
 <ul>
   <li>Retro-inspired browser interface</li>
@@ -45,14 +45,14 @@ Netscape Navigator era, with support for a companion server called
   <li>Legacy browser engine integration (planned)</li>
 </ul>
 
-<h2>🚧 Development</h2>
+<h2>Development</h2>
 
 <p>
 Netscapeit is currently in early development. Features and architecture
 are still being worked on.
 </p>
 
-<h2>📜 Project Goals</h2>
+<h2>Project Goals</h2>
 
 <ul>
   <li>Recreate the classic Netscape browsing experience.</li>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FileCode2, Globe, UploadCloud } from 'lucide-react';
 
 interface ComposerViewProps {
   onNavigate: (url: string) => void;
@@ -7,12 +6,12 @@ interface ComposerViewProps {
 
 const TEMPLATES: Record<string, { title: string; slug: string; html: string }> = {
   homepage: {
-    title: "My 1999 Cyber Homepage",
+    title: 'My 1999 Cyber Homepage',
     slug: 'my-cyber-page',
     html: `<div style="background:#001a33;color:#e6f2ff;font-family:Verdana,sans-serif;padding:28px;min-height:100%;">
   <center>
     <h1 style="color:#ffcc00;">Welcome to My 1999 Web Corner!</h1>
-    <p>Hosted live on <b>Xserver/1.99</b> and built in <b>Netscapeit Composer</b>.</p>
+    <p>Hosted live on <b>Xserver/1.99</b> and built in <b>Netscape Composer 4.72</b>.</p>
     <hr width="75%" color="#336699">
     <table width="80%" border="1" bordercolor="#336699" cellpadding="12" bgcolor="#002b55">
       <tr>
@@ -20,6 +19,7 @@ const TEMPLATES: Record<string, { title: string; slug: string; html: string }> =
           <h3 style="color:#66ffff;margin-top:0;">Cool Links</h3>
           <ul>
             <li><a href="http://home.netscapeit.com/" style="color:#ffcc00;">Netscapeit Netcenter</a></li>
+            <li><a href="http://youtube.xserver.net/" style="color:#ffcc00;">YouTube 1999 Gateway</a></li>
             <li><a href="http://geocities.xserver.net/cyberia/99/" style="color:#ffcc00;">Cyberia '99 GeoCities</a></li>
             <li><a href="http://winamp.xserver.com/" style="color:#ffcc00;">Winamp &amp; Shareware Vault</a></li>
           </ul>
@@ -52,12 +52,12 @@ const TEMPLATES: Record<string, { title: string; slug: string; html: string }> =
       <th align="left">Category</th>
     </tr>
     <tr>
-      <td><a href="http://altavista.xserver.net/">AltaVista Xserver Search</a></td>
-      <td>Search Engine</td>
+      <td><a href="http://youtube.xserver.net/">YouTube 1999 Gateway</a></td>
+      <td>Streaming Video</td>
     </tr>
     <tr>
-      <td><a href="http://spacejam.xserver.org/">Planet 1999 Hub</a></td>
-      <td>WebRing Directory</td>
+      <td><a href="http://altavista.xserver.net/">AltaVista Xserver Search</a></td>
+      <td>Search Engine</td>
     </tr>
     <tr>
       <td><a href="http://xserver.local/">Xserver Console</a></td>
@@ -114,134 +114,133 @@ export const ComposerView: React.FC<ComposerViewProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="min-h-full bg-[#e5e7eb] text-[#111827] p-5" style={{ fontFamily: '"Public Sans", Verdana, sans-serif' }}>
-      <div className="max-w-6xl mx-auto space-y-4">
-        <div className="bg-[#003366] text-white px-4 py-3 border border-[#002244] flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <FileCode2 className="w-5 h-5 text-[#ffcc00]" />
-            <div>
-              <h1 className="text-base font-bold">Netscapeit Composer — HTML Publishing Studio</h1>
-              <p className="text-xs text-[#bfd8f2]">Author classic HTML pages and publish them live onto Xserver/1.99</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <span className="text-[#bfd8f2]">Templates:</span>
-            <button
-              type="button"
-              onClick={() => applyTemplate('homepage')}
-              className="px-2.5 py-1 text-[#111827] netscape-raised-btn cursor-pointer font-medium"
-            >
-              Cyber Homepage
-            </button>
-            <button
-              type="button"
-              onClick={() => applyTemplate('zine')}
-              className="px-2.5 py-1 text-[#111827] netscape-raised-btn cursor-pointer font-medium"
-            >
-              Tech Zine
-            </button>
-            <button
-              type="button"
-              onClick={() => applyTemplate('links')}
-              className="px-2.5 py-1 text-[#111827] netscape-raised-btn cursor-pointer font-medium"
-            >
-              Hotlist Table
-            </button>
-          </div>
-        </div>
+    <div className="min-h-full bg-[#c0c0c0] text-[#000000] p-4" style={{ fontFamily: '"MS Sans Serif", Tahoma, sans-serif' }}>
+      <div className="max-w-6xl mx-auto space-y-3">
+        <table className="w-full border-collapse border border-[#003366]">
+          <tbody>
+            <tr className="bg-[#003366] text-white">
+              <td className="p-2.5">
+                <div className="text-sm font-bold">Netscape Composer 4.72 — HTML Page Publisher</div>
+                <div className="text-xs text-[#ccccff]">Edit HTML 4.0 markup and publish directly onto Xserver/1.99</div>
+              </td>
+              <td className="p-2.5 text-right text-xs whitespace-nowrap">
+                <span className="mr-2">Templates:</span>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate('homepage')}
+                  className="px-2 py-0.5 text-black netscape-raised-btn cursor-pointer mr-1"
+                >
+                  Cyber Homepage
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate('zine')}
+                  className="px-2 py-0.5 text-black netscape-raised-btn cursor-pointer mr-1"
+                >
+                  Tech Zine
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyTemplate('links')}
+                  className="px-2 py-0.5 text-black netscape-raised-btn cursor-pointer"
+                >
+                  Hotlist
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         {statusMsg && (
           <div
-            className={`p-3 border text-xs flex flex-wrap items-center justify-between gap-2 ${
+            className={`p-2 border text-xs flex flex-wrap items-center justify-between gap-2 ${
               statusMsg.type === 'ok'
-                ? 'bg-[#ecfdf5] border-[#059669] text-[#065f46]'
-                : 'bg-[#fef2f2] border-[#dc2626] text-[#991b1b]'
+                ? 'bg-[#e6ffed] border-[#008040] text-[#004d26]'
+                : 'bg-[#fff0f0] border-[#cc0000] text-[#990000]'
             }`}
           >
-            <span className="font-medium">{statusMsg.text}</span>
+            <span><b>{statusMsg.type === 'ok' ? 'Published:' : 'Error:'}</b> {statusMsg.text}</span>
             {statusMsg.url && (
               <button
                 type="button"
                 onClick={() => onNavigate(statusMsg.url!)}
-                className="px-3 py-1 text-[#111827] netscape-raised-btn font-semibold cursor-pointer inline-flex items-center gap-1"
+                className="px-2.5 py-0.5 text-black netscape-raised-btn font-bold cursor-pointer"
               >
-                <Globe className="w-3.5 h-3.5" />
-                Open Page in netscapeit
+                Open in Navigator
               </button>
             )}
           </div>
         )}
 
-        <form onSubmit={handlePublish} className="bg-[#d4d0c8] bevel-out p-4 space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <label className="block text-xs">
-              <span className="font-semibold text-[#111827] block mb-1">Page Title</span>
+        <form onSubmit={handlePublish} className="bg-[#c0c0c0] bevel-out p-3 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <label className="block">
+              <span className="font-bold block mb-1">Page Title:</span>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-2 py-1.5 bg-white bevel-in-sm text-xs focus:outline-none"
+                className="w-full px-2 py-1 bg-white bevel-in-sm text-xs focus:outline-none"
               />
             </label>
-            <label className="block text-xs">
-              <span className="font-semibold text-[#111827] block mb-1">Xserver URL Slug</span>
+            <label className="block">
+              <span className="font-bold block mb-1">Xserver URL Slug:</span>
               <div className="flex items-center bg-white bevel-in-sm">
-                <span className="px-2 text-[11px] text-[#4b5563] font-mono-retro shrink-0">/pages/</span>
+                <span className="px-1.5 text-[11px] text-[#555555] font-mono-retro shrink-0">/pages/</span>
                 <input
                   type="text"
                   required
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  className="w-full py-1.5 pr-2 text-xs font-mono-retro focus:outline-none"
+                  className="w-full py-1 pr-2 text-xs font-mono-retro focus:outline-none"
                 />
               </div>
             </label>
-            <label className="block text-xs">
-              <span className="font-semibold text-[#111827] block mb-1">Author Handle</span>
+            <label className="block">
+              <span className="font-bold block mb-1">Author Handle:</span>
               <input
                 type="text"
                 required
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-2 py-1.5 bg-white bevel-in-sm text-xs focus:outline-none"
+                className="w-full px-2 py-1 bg-white bevel-in-sm text-xs focus:outline-none"
               />
             </label>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div className="flex flex-col">
-              <span className="text-xs font-semibold text-[#111827] mb-1">HTML Markup Source</span>
+              <span className="text-xs font-bold mb-1">HTML Source:</span>
               <textarea
                 value={html}
                 onChange={(e) => setHtml(e.target.value)}
                 rows={15}
-                className="w-full p-2.5 bg-white bevel-in text-xs font-mono-retro leading-relaxed focus:outline-none resize-y"
+                className="w-full p-2 bg-white bevel-in text-xs font-mono-retro leading-normal focus:outline-none resize-y"
               />
             </div>
 
             <div className="flex flex-col">
-              <span className="text-xs font-semibold text-[#111827] mb-1">Live WYSIWYG Preview</span>
+              <span className="text-xs font-bold mb-1">Navigator Preview:</span>
               <iframe
                 title="Composer Live Preview"
                 sandbox=""
                 srcDoc={html}
-                className="w-full flex-1 min-h-[280px] bg-white bevel-in"
+                className="w-full flex-1 min-h-[260px] bg-white bevel-in"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-xs text-[#374151]">
+          <div className="flex items-center justify-between pt-1 text-xs">
+            <span>
               Target URL: <code className="font-mono-retro">http://xserver.local/pages/{slug || 'untitled'}</code>
             </span>
             <button
               type="submit"
               disabled={publishing}
-              className="px-4 py-1.5 text-xs font-bold text-[#111827] netscape-raised-btn cursor-pointer inline-flex items-center gap-1.5"
+              className="px-4 py-1 font-bold text-black netscape-raised-btn cursor-pointer"
             >
-              <UploadCloud className="w-4 h-4 text-[#003366]" />
-              {publishing ? 'Uploading to Xserver...' : 'Publish to Xserver'}
+              {publishing ? 'Publishing...' : 'Publish to Xserver'}
             </button>
           </div>
         </form>

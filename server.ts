@@ -22,6 +22,22 @@ import type {
   SlashdotStory,
   UserPublishedPage,
 } from './xserver/sites.ts';
+import {
+  extractYouTubeVideoId,
+  fetchYouTubeVideoDetail,
+  isYouTubeUrl,
+  renderYouTube1999Page,
+  searchYouTubeVideos,
+} from './xserver/youtube.ts';
+import {
+  runLiveWebSearchViaInteractions,
+  transcodeUrlViaInteractions,
+} from './xserver/interactions.ts';
+import {
+  adaptWaybackHtmlForNavigator,
+  fetchWaybackHtml,
+  lookupWaybackSnapshot,
+} from './xserver/wayback.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -158,6 +174,11 @@ const userPages: UserPublishedPage[] = [
     </div>`,
   },
 ];
+
+const INITIAL_HOST_HITS: Record<string, number> = { ...hostHits };
+const INITIAL_GUESTBOOK_ENTRIES: GuestbookEntry[] = guestbookEntries.map((e) => ({ ...e }));
+const INITIAL_SLASHDOT_COMMENTS = slashdotStories.map((s) => s.comments.map((c) => ({ ...c })));
+const INITIAL_USER_PAGES: UserPublishedPage[] = userPages.map((p) => ({ ...p }));
 
 const requestLog: LogEntry[] = [];
 
@@ -310,7 +331,11 @@ function buildSearchIndex(): SearchableDoc[] {
   return [...baseDocs, ...customDocs];
 }
 
-function sanitizeExternalHtml(rawHtml: string, baseUrl: string): string {
+function sanitizeExternalHtml(
+  rawHtml: string,
+  baseUrl: string,
+  liveReason?: 'brand-new-2025-plus' | 'user-bypass' | 'wayback-error'
+): string {
   // Remove remote script/iframe/object/embed tags and inline event handlers
   let cleaned = rawHtml
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
@@ -336,10 +361,31 @@ function sanitizeExternalHtml(rawHtml: string, baseUrl: string): string {
     }
   });
 
-  const banner = `<div style="background:#ffffe1;border-bottom:1px solid #999999;padding:6px 10px;font-family:Verdana,sans-serif;font-size:11px;color:#111111;">
-    <b>Xserver External HTTP Proxy:</b> Viewing remote page <code>${baseUrl.replace(/</g, '&lt;')}</code> (remote scripts stripped for 1999 browser safety) &nbsp;|&nbsp;
-    <a href="http://home.netscapeit.com/" style="color:#0000cc;">Return to Netcenter</a>
-  </div>`;
+  const cleanNoLive = baseUrl.replace(/([?&])xserver_live=1(&|$)/, '$1').replace(/[?&]$/, '');
+  const transcodeLink = baseUrl.includes('xserver_transcode=1')
+    ? ''
+    : ` &nbsp;|&nbsp; <a href="${cleanNoLive}${cleanNoLive.includes('?') ? '&' : '?'}xserver_transcode=1" style="color:#003366;"><b>Render as 1999 HTML (Interactions API)</b></a>`;
+
+  const waybackBackLink =
+    liveReason === 'user-bypass'
+      ? ` &nbsp;|&nbsp; <a href="${cleanNoLive}" style="color:#0000cc;"><b>Back to Wayback Archive</b></a>`
+      : '';
+
+  const label =
+    liveReason === 'brand-new-2025-plus'
+      ? 'Live 2026 Site (Brand new — no pre-2025 Wayback archive; loaded directly)'
+      : liveReason === 'user-bypass'
+      ? 'Live Site (Wayback bypassed)'
+      : 'Xserver External HTTP Proxy';
+
+  const banner = `<table width="100%" border="0" cellpadding="5" cellspacing="0" bgcolor="#ffffe1" style="border-bottom:1px solid #808080;font-family:Verdana,Arial,sans-serif;font-size:11px;color:#000000;">
+    <tr>
+      <td>
+        <b>${label}:</b> <code>${cleanNoLive.replace(/</g, '&lt;')}</code>${waybackBackLink}${transcodeLink} &nbsp;|&nbsp;
+        <a href="http://home.netscapeit.com/" style="color:#0000cc;">Netcenter</a>
+      </td>
+    </tr>
+  </table>`;
 
   if (/<body[^>]*>/i.test(cleaned)) {
     cleaned = cleaned.replace(/<body([^>]*)>/i, `<body$1>${banner}`);
@@ -347,7 +393,7 @@ function sanitizeExternalHtml(rawHtml: string, baseUrl: string): string {
     cleaned = `${banner}${cleaned}`;
   }
 
-  return `${cleaned}${getBridgeScript(baseUrl)}`;
+  return `${cleaned}${getBridgeScript(cleanNoLive)}`;
 }
 
 function renderNotFoundPage(url: string, reason: string): string {
@@ -522,10 +568,136 @@ async function startServer(): Promise<void> {
       return;
     }
 
-    // 2. AltaVista Xserver Search
+    // 2. AltaVista Xserver Search (Local, YouTube, or Interactions Live Web)
     if (host === 'altavista.xserver.net') {
       hostHits['altavista.xserver.net'] = (hostHits['altavista.xserver.net'] || 0) + 1;
       const q = parsed.searchParams.get('q') || '';
+      const mode = parsed.searchParams.get('mode') || 'local';
+
+      if (mode === 'youtube' && q.trim()) {
+        try {
+          const ytResults = await searchYouTubeVideos(q);
+          const html = renderYouTube1999Page({
+            baseUrl: normalizedUrl,
+            query: q,
+            video: null,
+            results: ytResults,
+          });
+          const bytes = Buffer.byteLength(html, 'utf8');
+          const elapsedMs = Math.max(5, Date.now() - startMs);
+          recordRequest({ method: 'GET', host: 'youtube.xserver.net', path: `/results?search_query=${encodeURIComponent(q)}`, status: 200, bytes, elapsedMs, userAgent });
+          res.json({
+            url: rawUrl,
+            normalizedUrl,
+            host: 'youtube.xserver.net',
+            path: '/results',
+            title: `YouTube 1999 Search: ${q}`,
+            status: 200,
+            statusText: 'OK',
+            headers: {
+              Server: 'Xserver/1.99 (Unix)',
+              'X-Virtual-Host': 'youtube.xserver.net',
+              'Content-Type': 'text/html; charset=utf-8',
+              'Content-Length': String(bytes),
+            },
+            bytes,
+            elapsedMs,
+            contentType: 'text/html',
+            isExternal: true,
+            isSecure: false,
+            mode: 'html',
+            html,
+          });
+          return;
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : 'Failed to fetch YouTube search.';
+          const html = renderYouTube1999Page({
+            baseUrl: normalizedUrl,
+            query: q,
+            video: null,
+            results: [],
+            errorMsg: msg,
+          });
+          const bytes = Buffer.byteLength(html, 'utf8');
+          const elapsedMs = Math.max(5, Date.now() - startMs);
+          recordRequest({ method: 'GET', host: 'youtube.xserver.net', path: '/results', status: 502, bytes, elapsedMs, userAgent });
+          res.json({
+            url: rawUrl,
+            normalizedUrl,
+            host: 'youtube.xserver.net',
+            path: '/results',
+            title: 'YouTube 1999 Search Error',
+            status: 502,
+            statusText: 'Bad Gateway',
+            headers: { Server: 'Xserver/1.99 (Unix)', 'Content-Type': 'text/html' },
+            bytes,
+            elapsedMs,
+            contentType: 'text/html',
+            isExternal: true,
+            isSecure: false,
+            mode: 'html',
+            html,
+          });
+          return;
+        }
+      }
+
+      if (mode === 'web' && q.trim()) {
+        try {
+          const html = await runLiveWebSearchViaInteractions(q);
+          const bytes = Buffer.byteLength(html, 'utf8');
+          const elapsedMs = Math.max(5, Date.now() - startMs);
+          recordRequest({ method: 'GET', host, path: `${reqPath}${parsed.search}`, status: 200, bytes, elapsedMs, userAgent });
+          res.json({
+            url: rawUrl,
+            normalizedUrl,
+            host,
+            path: reqPath,
+            title: `AltaVista Live Web: ${q}`,
+            status: 200,
+            statusText: 'OK',
+            headers: {
+              Server: 'Xserver/1.99 (Unix)',
+              'X-Interactions-Model': 'gemini-4-hydrogen',
+              'Content-Type': 'text/html; charset=utf-8',
+              'Content-Length': String(bytes),
+            },
+            bytes,
+            elapsedMs,
+            contentType: 'text/html',
+            isExternal: true,
+            isSecure: true,
+            mode: 'html',
+            html,
+          });
+          return;
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : 'Interactions API web search failed.';
+          const html = renderNotFoundPage(normalizedUrl, `Live Web Search via Interactions API failed: ${msg}`);
+          const bytes = Buffer.byteLength(html, 'utf8');
+          const elapsedMs = Math.max(5, Date.now() - startMs);
+          recordRequest({ method: 'GET', host, path: reqPath, status: 502, bytes, elapsedMs, userAgent });
+          res.json({
+            url: rawUrl,
+            normalizedUrl,
+            host,
+            path: reqPath,
+            title: 'Live Web Search Error — Xserver',
+            status: 502,
+            statusText: 'Bad Gateway',
+            headers: { Server: 'Xserver/1.99 (Unix)', 'Content-Type': 'text/html' },
+            bytes,
+            elapsedMs,
+            contentType: 'text/html',
+            isExternal: false,
+            isSecure: false,
+            mode: 'html',
+            html,
+          });
+          return;
+        }
+      }
+
       const terms = q
         .toLowerCase()
         .split(/\s+/)
@@ -578,6 +750,114 @@ async function startServer(): Promise<void> {
         html,
       });
       return;
+    }
+
+    // 2b. YouTube 1999 Gateway & Direct YouTube Video/Search URL Fetcher
+    // Note: bare youtube.com/ root (without video ID or search query) goes to Wayback 2006 unless xserver_live=1 or youtube.xserver.net
+    const ytQueryCheck = parsed.searchParams.get('search_query') || parsed.searchParams.get('q') || '';
+    const ytVideoIdCheck = extractYouTubeVideoId(parsed);
+    const shouldUseYouTubeGateway =
+      isYouTubeUrl(parsed) &&
+      (host === 'youtube.xserver.net' ||
+        Boolean(ytVideoIdCheck) ||
+        Boolean(ytQueryCheck) ||
+        parsed.searchParams.get('xserver_live') === '1');
+
+    if (shouldUseYouTubeGateway) {
+      hostHits['youtube.xserver.net'] = (hostHits['youtube.xserver.net'] || 0) + 1;
+      const searchQ = ytQueryCheck;
+      let targetUrlForId = parsed;
+      if (searchQ.includes('youtube.com/') || searchQ.includes('youtu.be/')) {
+        try {
+          targetUrlForId = new URL(searchQ.startsWith('http') ? searchQ : `https://${searchQ}`);
+        } catch {
+          targetUrlForId = parsed;
+        }
+      }
+      const videoId = extractYouTubeVideoId(targetUrlForId);
+
+      try {
+        const [videoDetail, searchResults] = await Promise.all([
+          videoId ? fetchYouTubeVideoDetail(videoId) : Promise.resolve(null),
+          searchYouTubeVideos(
+            videoId
+              ? searchQ || 'netscape navigator 1999'
+              : searchQ || 'netscape navigator 1999'
+          ),
+        ]);
+
+        const html = renderYouTube1999Page({
+          baseUrl: normalizedUrl,
+          query: searchQ,
+          video: videoDetail,
+          results: searchResults,
+        });
+        const bytes = Buffer.byteLength(html, 'utf8');
+        const elapsedMs = Math.max(5, Date.now() - startMs);
+        recordRequest({ method: 'GET', host, path: `${reqPath}${parsed.search}`, status: 200, bytes, elapsedMs, userAgent });
+        res.json({
+          url: rawUrl,
+          normalizedUrl,
+          host,
+          path: reqPath,
+          title: videoDetail ? `${videoDetail.title} — YouTube 1999` : 'YouTube 1999 Gateway — Xserver',
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            Server: 'Xserver/1.99 (Unix)',
+            'X-Virtual-Host': 'youtube.xserver.net',
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': String(bytes),
+          },
+          bytes,
+          elapsedMs,
+          contentType: 'text/html',
+          isExternal: true,
+          isSecure: parsed.protocol === 'https:',
+          mode: 'html',
+          html,
+        });
+        return;
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Unable to fetch YouTube data.';
+        const html = renderYouTube1999Page({
+          baseUrl: normalizedUrl,
+          query: searchQ,
+          video: videoId
+            ? {
+                videoId,
+                title: `YouTube Video (${videoId})`,
+                authorName: 'YouTube',
+                authorUrl: 'https://www.youtube.com/',
+                thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                description: '',
+              }
+            : null,
+          results: [],
+          errorMsg: msg,
+        });
+        const bytes = Buffer.byteLength(html, 'utf8');
+        const elapsedMs = Math.max(5, Date.now() - startMs);
+        recordRequest({ method: 'GET', host, path: reqPath, status: 502, bytes, elapsedMs, userAgent });
+        res.json({
+          url: rawUrl,
+          normalizedUrl,
+          host,
+          path: reqPath,
+          title: 'YouTube 1999 Gateway — Xserver',
+          status: 502,
+          statusText: 'Bad Gateway',
+          headers: { Server: 'Xserver/1.99 (Unix)', 'Content-Type': 'text/html' },
+          bytes,
+          elapsedMs,
+          contentType: 'text/html',
+          isExternal: true,
+          isSecure: false,
+          mode: 'html',
+          html,
+        });
+        return;
+      }
     }
 
     // 3. GeoCities Cyberia '99
@@ -894,9 +1174,113 @@ async function startServer(): Promise<void> {
     }
 
     try {
+      if (parsed.searchParams.get('xserver_transcode') === '1') {
+        const cleanTarget = new URL(normalizedUrl);
+        cleanTarget.searchParams.delete('xserver_transcode');
+        const finalHtml = await transcodeUrlViaInteractions(cleanTarget.toString());
+        const bytes = Buffer.byteLength(finalHtml, 'utf8');
+        const elapsedMs = Math.max(5, Date.now() - startMs);
+        recordRequest({ method: 'GET', host, path: reqPath, status: 200, bytes, elapsedMs, userAgent });
+        res.json({
+          url: rawUrl,
+          normalizedUrl,
+          host,
+          path: reqPath,
+          title: `${host} (1999 Interactions Edition)`,
+          status: 200,
+          statusText: 'OK',
+          headers: {
+            Server: 'Xserver/1.99 Proxy + Interactions API',
+            'X-Interactions-Model': 'gemini-4-hydrogen',
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': String(bytes),
+          },
+          bytes,
+          elapsedMs,
+          contentType: 'text/html',
+          isExternal: true,
+          isSecure: parsed.protocol === 'https:',
+          mode: 'html',
+          html: finalHtml,
+        });
+        return;
+      }
+
+      const bypassWayback = parsed.searchParams.get('xserver_live') === '1';
+      let liveReason: 'brand-new-2025-plus' | 'user-bypass' | 'wayback-error' = bypassWayback
+        ? 'user-bypass'
+        : 'wayback-error';
+
+      // Wayback Machine Time-Machine Engine:
+      // 1) Prefer 2006 snapshot for any website
+      // 2) If not around in 2006 (e.g., made in 2007+), use earliest pre-2025 snapshot
+      // 3) If brand new (2025/2026 only), skip Wayback and load live directly!
+      if (!bypassWayback) {
+        const cleanLookupUrl = new URL(normalizedUrl);
+        cleanLookupUrl.searchParams.delete('xserver_live');
+        const lookup = await lookupWaybackSnapshot(cleanLookupUrl.toString());
+
+        if (lookup.found && lookup.timestamp && lookup.archivedOriginalUrl && (lookup.reason === '2006' || lookup.reason === 'earliest-historical')) {
+          const archived = await fetchWaybackHtml(lookup.timestamp, lookup.archivedOriginalUrl);
+          const titleMatch = archived.html.match(/<title[^>]*>([^<]+)<\/title>/i);
+          const archivedTitle = titleMatch ? titleMatch[1].trim() : cleanLookupUrl.hostname;
+          const finalHtml = adaptWaybackHtmlForNavigator({
+            rawHtml: archived.html,
+            originalUrl: lookup.archivedOriginalUrl,
+            displayUrl: cleanLookupUrl.toString(),
+            timestamp: lookup.timestamp,
+            reason: lookup.reason,
+            isYouTubeRoot: isYouTubeUrl(parsed),
+          });
+          const bytes = Buffer.byteLength(finalHtml, 'utf8');
+          const elapsedMs = Math.max(5, Date.now() - startMs);
+          recordRequest({
+            method: 'GET',
+            host,
+            path: `${reqPath} [wayback:${lookup.year}]`,
+            status: archived.status,
+            bytes,
+            elapsedMs,
+            userAgent,
+          });
+          res.json({
+            url: rawUrl,
+            normalizedUrl: cleanLookupUrl.toString(),
+            host,
+            path: reqPath,
+            title: `${archivedTitle} (${lookup.year} Wayback)`,
+            status: archived.status,
+            statusText: archived.statusText,
+            headers: {
+              Server: 'Xserver/1.99 Wayback Engine -> web.archive.org',
+              'X-Wayback-Mode': lookup.reason,
+              'X-Wayback-Timestamp': lookup.timestamp,
+              'X-Wayback-Original': lookup.archivedOriginalUrl,
+              'Content-Type': 'text/html; charset=utf-8',
+              'Content-Length': String(bytes),
+            },
+            bytes,
+            elapsedMs,
+            contentType: 'text/html',
+            isExternal: true,
+            isSecure: false,
+            mode: 'html',
+            html: finalHtml,
+          });
+          return;
+        }
+
+        if (lookup.reason === 'brand-new-2025-plus') {
+          liveReason = 'brand-new-2025-plus';
+        }
+      }
+
+      const fetchTargetUrl = new URL(normalizedUrl);
+      fetchTargetUrl.searchParams.delete('xserver_live');
+
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 6500);
-      const upstream = await fetch(normalizedUrl, {
+      const upstream = await fetch(fetchTargetUrl.toString(), {
         signal: controller.signal,
         headers: {
           'User-Agent': 'Mozilla/4.72 [en] (Xserver/1.99 Proxy; netscapeit)',
@@ -908,15 +1292,15 @@ async function startServer(): Promise<void> {
       const contentType = upstream.headers.get('content-type') || 'text/html';
       const rawText = await upstream.text();
       const titleMatch = rawText.match(/<title[^>]*>([^<]+)<\/title>/i);
-      const pageTitle = titleMatch ? titleMatch[1].trim() : normalizedUrl;
+      const pageTitle = titleMatch ? titleMatch[1].trim() : fetchTargetUrl.toString();
 
       let finalHtml: string;
       if (contentType.includes('text/plain')) {
         finalHtml = `<html><head><title>${pageTitle}</title></head><body bgcolor="#ffffff" style="font-family:monospace;padding:16px;"><pre>${rawText
           .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')}</pre>${getBridgeScript(normalizedUrl)}</body></html>`;
+          .replace(/</g, '&lt;')}</pre>${getBridgeScript(fetchTargetUrl.toString())}</body></html>`;
       } else {
-        finalHtml = sanitizeExternalHtml(rawText, normalizedUrl);
+        finalHtml = sanitizeExternalHtml(rawText, normalizedUrl, liveReason);
       }
 
       const bytes = Buffer.byteLength(finalHtml, 'utf8');
@@ -924,7 +1308,7 @@ async function startServer(): Promise<void> {
       recordRequest({
         method: 'GET',
         host,
-        path: reqPath,
+        path: `${reqPath} [${liveReason}]`,
         status: upstream.status,
         bytes,
         elapsedMs,
@@ -941,9 +1325,10 @@ async function startServer(): Promise<void> {
         statusText: upstream.statusText || 'OK',
         headers: {
           Server: `Xserver/1.99 Proxy -> ${upstream.headers.get('server') || 'Remote'}`,
+          'X-Wayback-Mode': liveReason,
           'Content-Type': contentType,
           'Content-Length': String(bytes),
-          'X-Proxied-URL': normalizedUrl,
+          'X-Proxied-URL': fetchTargetUrl.toString(),
         },
         bytes,
         elapsedMs,
@@ -1128,9 +1513,16 @@ async function startServer(): Promise<void> {
           cgiScripts: ['/cgi-bin/counter.cgi'],
         },
         {
+          host: 'youtube.xserver.net',
+          defaultUrl: 'http://youtube.xserver.net/',
+          description: 'YouTube 1999 Video Gateway & Player',
+          hits: hostHits['youtube.xserver.net'] || 0,
+          cgiScripts: ['/api/xserver/browse?url=youtube.com'],
+        },
+        {
           host: 'altavista.xserver.net',
           defaultUrl: 'http://altavista.xserver.net/',
-          description: 'AltaVista Full-Text Index',
+          description: 'AltaVista Index & Live Web Search',
           hits: hostHits['altavista.xserver.net'] || 0,
           cgiScripts: ['/cgi-bin/search.cgi'],
         },
@@ -1180,6 +1572,31 @@ async function startServer(): Promise<void> {
       userPages,
       recentLogs: requestLog,
     });
+  });
+
+  app.post('/api/xserver/factory-reset', (_req: Request, res: Response) => {
+    totalRequests = 0;
+    totalBytesServed = 0;
+    requestLog.length = 0;
+
+    Object.keys(hostHits).forEach((k) => {
+      delete hostHits[k];
+    });
+    Object.assign(hostHits, INITIAL_HOST_HITS);
+
+    guestbookEntries.length = 0;
+    guestbookEntries.push(...INITIAL_GUESTBOOK_ENTRIES.map((e) => ({ ...e })));
+
+    slashdotStories.forEach((story, idx) => {
+      story.comments.length = 0;
+      const initialComments = INITIAL_SLASHDOT_COMMENTS[idx] || [];
+      story.comments.push(...initialComments.map((c) => ({ ...c })));
+    });
+
+    userPages.length = 0;
+    userPages.push(...INITIAL_USER_PAGES.map((p) => ({ ...p })));
+
+    res.json({ ok: true });
   });
 
   // Mount Vite dev middleware or serve static build

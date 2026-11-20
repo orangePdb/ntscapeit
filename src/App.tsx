@@ -1,22 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Bookmark,
-  ChevronDown,
-  FileCode2,
-  FolderOpen,
-  Home,
-  Lock,
-  LockOpen,
-  Plus,
-  RotateCw,
-  Search,
-  Server,
-  ShieldCheck,
-  Square,
-  Volume2,
-} from 'lucide-react';
 import type {
   BookmarkItem,
   BrowserResponse,
@@ -27,14 +9,34 @@ import type {
 import { NetscapeThrobber } from './components/NetscapeThrobber';
 import { BrowserViewport } from './components/BrowserViewport';
 import { BrowserModals } from './components/BrowserModals';
+import { TvStandbyScreen } from './components/TvStandbyScreen';
+import { IntroAnimation } from './components/IntroAnimation';
 import type { ActiveModalType } from './components/BrowserModals';
+import {
+  BackIcon,
+  BookmarksRibbonIcon,
+  ComposerIcon,
+  FolderSmallIcon,
+  ForwardIcon,
+  HomeIcon,
+  MyNetscapeIcon,
+  PageSmallIcon,
+  PrintIcon,
+  ReloadIcon,
+  SearchIcon,
+  SecurityIcon,
+  StopIcon,
+  XserverIcon,
+  YouTubeRetroIcon,
+} from './components/NavigatorIcons';
 import { playMidiTrack, stopRetroAudio } from './utils/retroAudio';
 
 const HOME_URL = 'http://home.netscapeit.com/';
 
 const DEFAULT_BOOKMARKS: BookmarkItem[] = [
   { id: 'bm-1', title: 'Netcenter', url: 'http://home.netscapeit.com/' },
-  { id: 'bm-2', title: 'Xserver Console', url: 'http://xserver.local/' },
+  { id: 'bm-yt', title: 'YouTube 1999', url: 'http://youtube.xserver.net/' },
+  { id: 'bm-2', title: 'Xserver', url: 'http://xserver.local/' },
   { id: 'bm-3', title: 'AltaVista', url: 'http://altavista.xserver.net/' },
   { id: 'bm-4', title: "Cyberia '99", url: 'http://geocities.xserver.net/cyberia/99/' },
   { id: 'bm-5', title: "Slashdot '99", url: 'http://slashdot.xserver.org/' },
@@ -59,6 +61,9 @@ export default function App() {
   const [textScale, setTextScale] = useState<'small' | 'normal' | 'large'>('normal');
   const [showPersonalBar, setShowPersonalBar] = useState<boolean>(true);
   const [windowedMode, setWindowedMode] = useState<boolean>(false);
+  const [introDone, setIntroDone] = useState<boolean>(false);
+  const [introKey, setIntroKey] = useState<number>(0);
+  const [appClosed, setAppClosed] = useState<boolean>(false);
 
   const [openMenu, setOpenMenu] = useState<MenuKey>(null);
   const [activeModal, setActiveModal] = useState<ActiveModalType>(null);
@@ -69,7 +74,7 @@ export default function App() {
 
   const [bookmarks, setBookmarks] = useState<BookmarkItem[]>(() => {
     try {
-      const saved = localStorage.getItem('netscapeit_bookmarks_v1');
+      const saved = localStorage.getItem('netscapeit_bookmarks_v2');
       if (saved) {
         const parsed = JSON.parse(saved) as BookmarkItem[];
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -86,14 +91,14 @@ export default function App() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('netscapeit_bookmarks_v1', JSON.stringify(bookmarks));
+      localStorage.setItem('netscapeit_bookmarks_v2', JSON.stringify(bookmarks));
     } catch {
       // Ignore storage errors
     }
   }, [bookmarks]);
 
-  // Close menus on outside click or Escape
   useEffect(() => {
+    if (!introDone || appClosed) return;
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setOpenMenu(null);
@@ -116,7 +121,7 @@ export default function App() {
       window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('click', onDocClick);
     };
-  }, []);
+  }, [introDone, appClosed]);
 
   const clearSimTimer = () => {
     if (simTimerRef.current !== null) {
@@ -147,7 +152,6 @@ export default function App() {
         }
         const data = (await res.json()) as BrowserResponse;
 
-        // Simulate 56k / ISDN progressive transfer if enabled
         const delayMs =
           connectionSpeed === '56k' ? 950 : connectionSpeed === 'isdn' ? 320 : 0;
 
@@ -180,7 +184,7 @@ export default function App() {
         setLoadProgress(100);
         setLoading(false);
         setStatusText(
-          `Document: Done (${(data.bytes / 1024).toFixed(1)} KB · ${data.elapsedMs}ms via Xserver/1.99)`
+          `Document: Done (${(data.bytes / 1024).toFixed(1)} KB, ${data.elapsedMs}ms via Xserver/1.99)`
         );
 
         if (pushHistory) {
@@ -197,7 +201,7 @@ export default function App() {
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
           setLoading(false);
-          setStatusText('Transfer interrupted.');
+          setStatusText('Document: Stopped.');
           return;
         }
         setLoading(false);
@@ -207,13 +211,11 @@ export default function App() {
     [connectionSpeed, historyIndex]
   );
 
-  // Initial load
   useEffect(() => {
     void loadUrl(HOME_URL, { pushHistory: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Simulated Download Timer
   useEffect(() => {
     if (!downloadJob || downloadJob.done) return;
     const speedKbps =
@@ -260,6 +262,56 @@ export default function App() {
     setStatusText('Document: Stopped.');
   };
 
+  const handleCloseApp = useCallback(() => {
+    clearSimTimer();
+    abortRef.current?.abort();
+    stopRetroAudio();
+    setPlayingTrack(null);
+    setLoading(false);
+    setOpenMenu(null);
+    setActiveModal(null);
+    setFindOpen(false);
+    setAppClosed(true);
+  }, []);
+
+  const handleFactoryReset = useCallback(() => {
+    clearSimTimer();
+    abortRef.current?.abort();
+    stopRetroAudio();
+    try {
+      localStorage.removeItem('netscapeit_bookmarks_v2');
+    } catch {
+      // Ignore storage errors
+    }
+    setBookmarks(DEFAULT_BOOKMARKS);
+    setConnectionSpeed('t1');
+    setTextScale('normal');
+    setShowPersonalBar(true);
+    setWindowedMode(false);
+    setHistory([]);
+    setHistoryIndex(-1);
+    setCurrentPage(null);
+    setLocationInput(HOME_URL);
+    setLoading(false);
+    setLoadProgress(100);
+    setStatusText('Document: Done');
+    setOpenMenu(null);
+    setActiveModal(null);
+    setFindOpen(false);
+    setFindQuery('');
+    setPlayingTrack(null);
+    setDownloadJob(null);
+    setAppClosed(false);
+    setIntroKey((k) => k + 1);
+    setIntroDone(false);
+
+    void fetch('/api/xserver/factory-reset', { method: 'POST' })
+      .catch(() => {})
+      .finally(() => {
+        void loadUrl(HOME_URL, { pushHistory: true });
+      });
+  }, [loadUrl]);
+
   const handleLocationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     void loadUrl(locationInput, { pushHistory: true });
@@ -286,7 +338,6 @@ export default function App() {
         }
       }
 
-      // POST CGI handlers on Xserver
       if (payload.action.includes('guestbook.cgi')) {
         setStatusText('CGI: Posting guestbook entry to Xserver...');
         try {
@@ -343,7 +394,7 @@ export default function App() {
   );
 
   const handleSaveDownloadedFile = (job: DownloadJob) => {
-    const content = `Downloaded from Xserver/1.99 via netscapeit\nFile: ${job.filename}\nSource: ${job.url}\nSize: ${job.totalKb} KB\nDate: 1999-11-18\n`;
+    const content = `Downloaded from Xserver/1.99 via Netscape Navigator 4.72 [netscapeit]\nFile: ${job.filename}\nSource: ${job.url}\nSize: ${job.totalKb} KB\nDate: 1999-11-18\n`;
     const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -393,20 +444,28 @@ export default function App() {
   const canBack = historyIndex > 0;
   const canForward = historyIndex < history.length - 1;
 
+  if (!introDone) {
+    return <IntroAnimation key={introKey} onComplete={() => setIntroDone(true)} />;
+  }
+
+  if (appClosed) {
+    return <TvStandbyScreen />;
+  }
+
   return (
     <div
       className={`h-screen w-screen bg-[#008080] flex flex-col overflow-hidden ${
-        windowedMode ? 'p-4 md:p-7' : 'p-0'
+        windowedMode ? 'p-4 md:p-6' : 'p-0'
       }`}
     >
-      {/* Main Netscapeit Communicator Browser Window */}
+      {/* Main Netscape Navigator 4.72 Window */}
       <div className="flex-1 min-h-0 flex flex-col bg-[#c0c0c0] bevel-out overflow-hidden">
-        {/* 1. Classic Title Bar */}
+        {/* 1. Classic Netscape Navigator 4.72 Title Bar */}
         <div
-          className="h-7 px-2 flex items-center justify-between text-white shrink-0"
+          className="h-6 px-1.5 flex items-center justify-between text-white shrink-0"
           style={{ background: 'linear-gradient(90deg, #000080 0%, #1084d0 100%)' }}
         >
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-1.5 min-w-0">
             <div
               className="w-4 h-4 bg-[#001429] border border-[#6699cc] flex items-center justify-center text-[11px] font-bold leading-none shrink-0"
               style={{ fontFamily: 'Georgia, serif' }}
@@ -414,26 +473,28 @@ export default function App() {
               N
             </div>
             <span className="text-xs font-bold truncate">
-              {currentPage ? `${currentPage.title} - netscapeit` : 'netscapeit'}
+              {currentPage
+                ? `${currentPage.title} - Netscape [netscapeit 4.72]`
+                : 'Netscape Navigator 4.72 [netscapeit]'}
             </span>
           </div>
 
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 shrink-0">
             <button
               type="button"
               onClick={() => setWindowedMode((v) => !v)}
-              title={windowedMode ? 'Maximize Window' : 'Restore Windowed Mode'}
-              aria-label={windowedMode ? 'Maximize Window' : 'Restore Windowed Mode'}
-              className="w-5 h-4 bg-[#c0c0c0] text-black bevel-out-sm text-[10px] font-bold flex items-center justify-center cursor-pointer"
+              title={windowedMode ? 'Maximize' : 'Restore Window'}
+              aria-label={windowedMode ? 'Maximize Window' : 'Restore Window'}
+              className="w-4 h-4 bg-[#c0c0c0] text-black bevel-out-sm text-[10px] font-bold flex items-center justify-center cursor-pointer leading-none"
             >
               {windowedMode ? '□' : '❐'}
             </button>
             <button
               type="button"
-              onClick={() => void loadUrl(HOME_URL, { pushHistory: true })}
-              title="Reset to Netcenter Home"
-              aria-label="Reset to Home"
-              className="w-5 h-4 bg-[#c0c0c0] text-black bevel-out-sm text-[10px] font-bold flex items-center justify-center cursor-pointer"
+              onClick={handleCloseApp}
+              title="Close"
+              aria-label="Close"
+              className="w-4 h-4 bg-[#c0c0c0] text-black bevel-out-sm text-[10px] font-bold flex items-center justify-center cursor-pointer leading-none"
             >
               ×
             </button>
@@ -442,7 +503,7 @@ export default function App() {
 
         {/* 2. Menu Bar */}
         <div
-          className="relative px-1.5 py-0.5 border-b border-[#808080] flex items-center gap-0.5 text-xs text-[#111827] shrink-0"
+          className="relative px-1 py-0.5 border-b border-[#808080] flex items-center gap-0.5 text-xs text-[#000000] shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
           {(
@@ -465,15 +526,15 @@ export default function App() {
                     : 'hover:bg-[#000080] hover:text-white'
                 }`}
               >
-                {m.label}
+                <u>{m.label[0]}</u>{m.label.slice(1)}
               </button>
 
               {openMenu === m.key && (
-                <div className="absolute left-0 top-full z-40 mt-0.5 min-w-[210px] bg-[#c0c0c0] bevel-out py-1 shadow-lg text-xs text-[#111827]">
+                <div className="absolute left-0 top-full z-40 mt-0.5 min-w-[220px] bg-[#c0c0c0] bevel-out py-1 shadow-[2px_2px_0_#000000] text-xs text-[#000000]">
                   {m.key === 'file' && (
                     <>
                       <MenuOption
-                        label="Open Location..."
+                        label="Open Page..."
                         shortcut="Ctrl+L"
                         onClick={() => {
                           setOpenMenu(null);
@@ -482,14 +543,14 @@ export default function App() {
                         }}
                       />
                       <MenuOption
-                        label="Save Page As (.html)..."
+                        label="Save As (.html)..."
                         onClick={() => {
                           setOpenMenu(null);
                           handleSaveCurrentHtml();
                         }}
                       />
                       <MenuOption
-                        label="Print Page..."
+                        label="Print..."
                         onClick={() => {
                           setOpenMenu(null);
                           window.print();
@@ -502,6 +563,11 @@ export default function App() {
                           setOpenMenu(null);
                           void loadUrl(HOME_URL);
                         }}
+                      />
+                      <div className="my-1 border-t border-[#808080] border-b border-b-white" />
+                      <MenuOption
+                        label="Exit"
+                        onClick={handleCloseApp}
                       />
                     </>
                   )}
@@ -569,7 +635,7 @@ export default function App() {
                         }}
                       />
                       <MenuOption
-                        label="Xserver HTTP Headers..."
+                        label="Page Info / Xserver Headers..."
                         onClick={() => {
                           setOpenMenu(null);
                           setActiveModal('headers');
@@ -607,7 +673,7 @@ export default function App() {
                       {history.slice(-6).reverse().map((item, idx) => (
                         <MenuOption
                           key={`${item.url}-${idx}`}
-                          label={item.title.slice(0, 28)}
+                          label={item.title.slice(0, 30)}
                           onClick={() => {
                             setOpenMenu(null);
                             void loadUrl(item.url);
@@ -620,6 +686,20 @@ export default function App() {
                   {m.key === 'communicator' && (
                     <>
                       <MenuOption
+                        label="Navigator (Netcenter)"
+                        onClick={() => {
+                          setOpenMenu(null);
+                          void loadUrl(HOME_URL);
+                        }}
+                      />
+                      <MenuOption
+                        label="YouTube 1999 Gateway"
+                        onClick={() => {
+                          setOpenMenu(null);
+                          void loadUrl('http://youtube.xserver.net/');
+                        }}
+                      />
+                      <MenuOption
                         label="Xserver/1.99 Control Console"
                         onClick={() => {
                           setOpenMenu(null);
@@ -627,29 +707,22 @@ export default function App() {
                         }}
                       />
                       <MenuOption
-                        label="Netscapeit Composer (HTML Editor)"
+                        label="Composer (HTML Editor)"
                         onClick={() => {
                           setOpenMenu(null);
                           void loadUrl('http://webmaster.xserver.local/builder.html');
                         }}
                       />
                       <MenuOption
-                        label="Bookmarks Manager..."
+                        label="Bookmarks..."
                         onClick={() => {
                           setOpenMenu(null);
                           setActiveModal('bookmarks');
                         }}
                       />
-                      <MenuOption
-                        label="Dial-Up & Speed Preferences..."
-                        onClick={() => {
-                          setOpenMenu(null);
-                          setActiveModal('preferences');
-                        }}
-                      />
                       {playingTrack && (
                         <MenuOption
-                          label={`Stop Audio (${playingTrack})`}
+                          label={`Stop MIDI (${playingTrack})`}
                           onClick={() => {
                             setOpenMenu(null);
                             handlePlayAudio('stop');
@@ -662,7 +735,7 @@ export default function App() {
                   {m.key === 'help' && (
                     <>
                       <MenuOption
-                        label="About netscapeit & Xserver"
+                        label="About Netscape Navigator 4.72..."
                         onClick={() => {
                           setOpenMenu(null);
                           setActiveModal('about');
@@ -683,54 +756,62 @@ export default function App() {
           ))}
         </div>
 
-        {/* 3. Navigation Toolbar */}
-        <div className="px-2 py-1 border-t border-white border-b border-b-[#808080] flex items-center justify-between gap-2 shrink-0 overflow-x-auto">
-          <div className="flex items-center gap-1">
+        {/* 3. Authentic Netscape Navigator 4.72 Navigation Toolbar */}
+        <div className="px-1.5 py-1 border-t border-white border-b border-b-[#808080] flex items-center justify-between gap-2 shrink-0 overflow-x-auto">
+          <div className="flex items-center gap-0.5">
+            {/* Classic 1999 Toolbar Drag Grip */}
+            <div className="w-1.5 h-9 border-l border-white border-r border-[#808080] mr-1 shrink-0" />
+
             <ToolbarButton
-              icon={<ArrowLeft className="w-4 h-4" />}
+              icon={<BackIcon />}
               label="Back"
               disabled={!canBack}
               onClick={handleBack}
             />
             <ToolbarButton
-              icon={<ArrowRight className="w-4 h-4" />}
+              icon={<ForwardIcon />}
               label="Forward"
               disabled={!canForward}
               onClick={handleForward}
             />
             <ToolbarButton
-              icon={<RotateCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />}
+              icon={<ReloadIcon />}
               label="Reload"
               onClick={handleReload}
             />
             <ToolbarButton
-              icon={<Home className="w-4 h-4" />}
+              icon={<HomeIcon />}
               label="Home"
               onClick={() => void loadUrl(HOME_URL)}
             />
-            <div className="w-px h-8 bg-[#808080] border-r border-white mx-0.5" />
+            <div className="w-px h-9 bg-[#808080] border-r border-white mx-0.5 shrink-0" />
             <ToolbarButton
-              icon={<Search className="w-4 h-4" />}
+              icon={<SearchIcon />}
               label="Search"
               onClick={() => void loadUrl('http://altavista.xserver.net/')}
             />
             <ToolbarButton
-              icon={<Server className="w-4 h-4 text-[#003366]" />}
-              label="Xserver"
-              onClick={() => void loadUrl('http://xserver.local/')}
+              icon={<MyNetscapeIcon />}
+              label="My Netscape"
+              onClick={() => void loadUrl('http://spacejam.xserver.org/')}
             />
             <ToolbarButton
-              icon={<FileCode2 className="w-4 h-4 text-[#006666]" />}
-              label="Composer"
-              onClick={() => void loadUrl('http://webmaster.xserver.local/builder.html')}
+              icon={<YouTubeRetroIcon />}
+              label="YouTube"
+              onClick={() => void loadUrl('http://youtube.xserver.net/')}
             />
             <ToolbarButton
-              icon={<ShieldCheck className="w-4 h-4 text-[#92400e]" />}
+              icon={<PrintIcon />}
+              label="Print"
+              onClick={() => window.print()}
+            />
+            <ToolbarButton
+              icon={<SecurityIcon locked={currentPage?.isSecure} />}
               label="Security"
               onClick={() => setActiveModal('headers')}
             />
             <ToolbarButton
-              icon={<Square className="w-3.5 h-3.5 fill-[#dc2626] text-[#dc2626]" />}
+              icon={<StopIcon />}
               label="Stop"
               onClick={handleStop}
             />
@@ -741,34 +822,39 @@ export default function App() {
 
         {/* 4. Location Toolbar */}
         <div
-          className="px-2 py-1 border-t border-white border-b border-b-[#808080] flex items-center gap-2 text-xs shrink-0"
+          className="px-1.5 py-1 border-t border-white border-b border-b-[#808080] flex items-center gap-1.5 text-xs shrink-0"
           onClick={(e) => e.stopPropagation()}
         >
+          <div className="w-1.5 h-5 border-l border-white border-r border-[#808080] shrink-0" />
+
           <button
             type="button"
             onClick={() => setActiveModal('bookmarks')}
-            className="px-2 py-1 netscape-btn flex items-center gap-1 font-medium text-[#111827] cursor-pointer whitespace-nowrap shrink-0"
+            className="px-1.5 py-0.5 netscape-btn flex items-center gap-1 text-[#000000] cursor-pointer whitespace-nowrap shrink-0"
           >
-            <Bookmark className="w-3.5 h-3.5 text-[#003366]" />
-            Bookmarks
+            <BookmarksRibbonIcon />
+            <span>Bookmarks</span>
           </button>
 
           <form onSubmit={handleLocationSubmit} className="flex-1 flex items-center gap-1.5 min-w-0">
-            <label htmlFor="location-bar" className="font-semibold text-[#111827] shrink-0">
+            <label htmlFor="location-bar" className="text-[#000000] shrink-0">
               Location:
             </label>
-            <input
-              id="location-bar"
-              ref={locationInputRef}
-              type="text"
-              value={locationInput}
-              onChange={(e) => setLocationInput(e.target.value)}
-              placeholder="http://home.netscapeit.com/"
-              className="flex-1 min-w-0 px-2 py-0.5 bg-white bevel-in-sm text-xs font-mono-retro text-[#111827] focus:outline-none select-text"
-            />
+            <div className="flex-1 min-w-0 flex items-center bg-white bevel-in-sm px-1.5 py-0.5 gap-1.5">
+              <PageSmallIcon className="w-3.5 h-3.5 shrink-0" />
+              <input
+                id="location-bar"
+                ref={locationInputRef}
+                type="text"
+                value={locationInput}
+                onChange={(e) => setLocationInput(e.target.value)}
+                placeholder="http://home.netscapeit.com/"
+                className="flex-1 min-w-0 bg-transparent text-xs font-mono-retro text-[#000000] focus:outline-none select-text"
+              />
+            </div>
             <button
               type="submit"
-              className="px-3 py-0.5 netscape-raised-btn text-xs font-semibold text-[#111827] cursor-pointer shrink-0"
+              className="px-2.5 py-0.5 netscape-raised-btn text-xs font-bold text-[#000000] cursor-pointer shrink-0"
             >
               Go
             </button>
@@ -778,14 +864,28 @@ export default function App() {
             <button
               type="button"
               onClick={() => setOpenMenu((prev) => (prev === 'related' ? null : 'related'))}
-              className="px-2 py-1 netscape-btn flex items-center gap-1 text-xs font-medium text-[#111827] cursor-pointer whitespace-nowrap"
+              className="px-2 py-0.5 netscape-btn flex items-center gap-1 text-xs text-[#000000] cursor-pointer whitespace-nowrap"
             >
-              What&apos;s Related
-              <ChevronDown className="w-3 h-3" />
+              <span>What&apos;s Related</span>
+              <span className="text-[9px]">▼</span>
             </button>
 
             {openMenu === 'related' && (
-              <div className="absolute right-0 top-full z-40 mt-0.5 w-60 bg-[#c0c0c0] bevel-out py-1 shadow-lg text-xs">
+              <div className="absolute right-0 top-full z-40 mt-0.5 w-64 bg-[#c0c0c0] bevel-out py-1 shadow-[2px_2px_0_#000000] text-xs">
+                <MenuOption
+                  label="YouTube 1999 Gateway"
+                  onClick={() => {
+                    setOpenMenu(null);
+                    void loadUrl('http://youtube.xserver.net/');
+                  }}
+                />
+                <MenuOption
+                  label="YouTube: Me at the zoo (2005)"
+                  onClick={() => {
+                    setOpenMenu(null);
+                    void loadUrl('https://www.youtube.com/watch?v=jNQXAC9IVRw');
+                  }}
+                />
                 <MenuOption
                   label="Netscapeit Netcenter"
                   onClick={() => {
@@ -822,15 +922,36 @@ export default function App() {
                   }}
                 />
                 <MenuOption
-                  label="Planet 1999 WebRing"
+                  label="Xserver Control Console"
                   onClick={() => {
                     setOpenMenu(null);
-                    void loadUrl('http://spacejam.xserver.org/');
+                    void loadUrl('http://xserver.local/');
                   }}
                 />
                 <div className="my-1 border-t border-[#808080] border-b border-b-white" />
                 <MenuOption
-                  label="Live Web: example.com (via Xserver Proxy)"
+                  label="google.com (2006 Wayback)"
+                  onClick={() => {
+                    setOpenMenu(null);
+                    void loadUrl('https://www.google.com/');
+                  }}
+                />
+                <MenuOption
+                  label="yahoo.com (2006 Wayback)"
+                  onClick={() => {
+                    setOpenMenu(null);
+                    void loadUrl('https://www.yahoo.com/');
+                  }}
+                />
+                <MenuOption
+                  label="youtube.com (2006 Wayback)"
+                  onClick={() => {
+                    setOpenMenu(null);
+                    void loadUrl('https://www.youtube.com/');
+                  }}
+                />
+                <MenuOption
+                  label="example.com (Wayback / Live)"
                   onClick={() => {
                     setOpenMenu(null);
                     void loadUrl('https://example.com');
@@ -843,19 +964,19 @@ export default function App() {
 
         {/* 5. Personal Toolbar (Bookmarks Strip) */}
         {showPersonalBar && (
-          <div className="px-2 py-1 border-t border-white border-b border-b-[#808080] flex items-center gap-1 overflow-x-auto text-xs shrink-0">
-            <span className="text-[11px] font-semibold text-[#4b5563] pr-1 shrink-0">Personal:</span>
+          <div className="px-1.5 py-0.5 border-t border-white border-b border-b-[#808080] flex items-center gap-1 overflow-x-auto text-xs shrink-0">
+            <div className="w-1.5 h-5 border-l border-white border-r border-[#808080] mr-0.5 shrink-0" />
             {bookmarks.map((bm) => (
               <button
                 key={bm.id}
                 type="button"
                 onClick={() => void loadUrl(bm.url)}
                 title={bm.url}
-                className={`px-2 py-0.5 netscape-btn text-xs text-[#111827] flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0 ${
-                  currentPage?.normalizedUrl === bm.url ? 'netscape-btn-active font-semibold' : ''
+                className={`px-1.5 py-0.5 netscape-btn text-xs text-[#000000] flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0 ${
+                  currentPage?.normalizedUrl === bm.url ? 'netscape-btn-active font-bold' : ''
                 }`}
               >
-                <FolderOpen className="w-3 h-3 text-[#b45309]" />
+                <FolderSmallIcon />
                 {bm.title}
               </button>
             ))}
@@ -863,16 +984,15 @@ export default function App() {
               type="button"
               onClick={handleAddBookmark}
               title="Bookmark Current Page"
-              className="ml-auto px-2 py-0.5 netscape-btn text-[11px] text-[#003366] font-semibold flex items-center gap-1 cursor-pointer whitespace-nowrap shrink-0"
+              className="ml-auto px-2 py-0.5 netscape-btn text-[11px] text-[#000080] font-bold cursor-pointer whitespace-nowrap shrink-0"
             >
-              <Plus className="w-3 h-3" />
-              Add
+              + Add Bookmark
             </button>
           </div>
         )}
 
         {/* 6. Main Document Viewport */}
-        <div className="flex-1 min-h-0 p-1 flex flex-col">
+        <div className="flex-1 min-h-0 p-0.5 flex flex-col">
           <BrowserViewport
             page={currentPage}
             loading={loading}
@@ -889,21 +1009,17 @@ export default function App() {
           />
         </div>
 
-        {/* 7. Bottom Communicator Status Bar */}
-        <div className="px-1.5 py-1 border-t border-white flex items-center justify-between gap-2 text-[11px] text-[#111827] shrink-0">
-          <div className="flex items-center gap-1.5 flex-1 min-w-0">
+        {/* 7. Classic Netscape Navigator 4.72 Bottom Status Bar */}
+        <div className="px-1 py-0.5 border-t border-white flex items-center justify-between gap-1 text-[11px] text-[#000000] shrink-0">
+          <div className="flex items-center gap-1 flex-1 min-w-0">
             <button
               type="button"
               onClick={() => setActiveModal('headers')}
-              title="Inspect Xserver Connection & HTTP Headers"
+              title="Security & Xserver Connection Info"
               className="px-1.5 py-0.5 bevel-in-sm bg-[#c0c0c0] flex items-center gap-1 cursor-pointer shrink-0"
             >
-              {currentPage?.isSecure ? (
-                <Lock className="w-3 h-3 text-[#15803d]" />
-              ) : (
-                <LockOpen className="w-3 h-3 text-[#4b5563]" />
-              )}
-              <span className="font-semibold">Xserver/1.99</span>
+              <SecurityIcon className="w-3.5 h-3.5" locked={currentPage?.isSecure} />
+              <span className="font-bold">Xserver/1.99</span>
             </button>
 
             <div className="flex-1 min-w-0 px-2 py-0.5 bevel-in-sm bg-[#c0c0c0] truncate tabular-nums">
@@ -934,57 +1050,55 @@ export default function App() {
                 type="button"
                 onClick={() => handlePlayAudio('stop')}
                 title="Click to stop MIDI audio"
-                className="px-2 py-0.5 bevel-in-sm bg-[#fef3c7] text-[#92400e] flex items-center gap-1 cursor-pointer shrink-0"
+                className="px-2 py-0.5 bevel-in-sm bg-[#ffffcc] text-[#663300] font-bold cursor-pointer shrink-0"
               >
-                <Volume2 className="w-3 h-3" />
-                <span>Stop {playingTrack}</span>
+                Stop {playingTrack}
               </button>
             )}
           </div>
 
-          {/* Classic Communicator Suite Quick-Switch Dock */}
-          <div className="bevel-in-sm px-1.5 py-0.5 flex items-center gap-2 shrink-0">
+          {/* Classic Communicator 4.72 Component Bar */}
+          <div className="bevel-in-sm px-1 py-0.5 flex items-center gap-1.5 shrink-0">
             <button
               type="button"
               onClick={() => void loadUrl(HOME_URL)}
               title="Navigator (Netcenter)"
               aria-label="Navigator Home"
-              className="hover:text-[#000080] cursor-pointer"
+              className="cursor-pointer p-0.5 hover:bg-[#d4d0c8]"
             >
-              <Home className="w-3.5 h-3.5" />
+              <MyNetscapeIcon className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => void loadUrl('http://youtube.xserver.net/')}
+              title="YouTube 1999 Gateway"
+              aria-label="YouTube 1999"
+              className="cursor-pointer p-0.5 hover:bg-[#d4d0c8]"
+            >
+              <YouTubeRetroIcon className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               onClick={() => void loadUrl('http://xserver.local/')}
               title="Xserver Control Console"
               aria-label="Xserver Console"
-              className="hover:text-[#000080] cursor-pointer"
+              className="cursor-pointer p-0.5 hover:bg-[#d4d0c8]"
             >
-              <Server className="w-3.5 h-3.5" />
+              <XserverIcon className="w-3.5 h-3.5" />
             </button>
             <button
               type="button"
               onClick={() => void loadUrl('http://webmaster.xserver.local/builder.html')}
-              title="Netscapeit Composer"
+              title="Netscape Composer"
               aria-label="Composer"
-              className="hover:text-[#000080] cursor-pointer"
+              className="cursor-pointer p-0.5 hover:bg-[#d4d0c8]"
             >
-              <FileCode2 className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveModal('bookmarks')}
-              title="Bookmarks"
-              aria-label="Bookmarks"
-              className="hover:text-[#000080] cursor-pointer"
-            >
-              <Bookmark className="w-3.5 h-3.5" />
+              <ComposerIcon className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Modals & Download Dialog */}
       <BrowserModals
         activeModal={activeModal}
         onClose={() => setActiveModal(null)}
@@ -1004,6 +1118,7 @@ export default function App() {
           setHistoryIndex(currentPage ? 0 : -1);
           setStatusText('Session history cleared.');
         }}
+        onFactoryReset={handleFactoryReset}
         downloadJob={downloadJob}
         onDismissDownload={() => setDownloadJob(null)}
         onSaveDownloadedFile={handleSaveDownloadedFile}
@@ -1022,8 +1137,8 @@ const ToolbarButton: React.FC<{
     type="button"
     disabled={disabled}
     onClick={onClick}
-    className={`px-2 py-1 min-w-[48px] flex flex-col items-center justify-center gap-0.5 text-[11px] netscape-btn whitespace-nowrap shrink-0 ${
-      disabled ? 'opacity-45 cursor-default' : 'cursor-pointer text-[#111827]'
+    className={`px-2 py-0.5 min-w-[50px] flex flex-col items-center justify-center gap-0.5 text-[11px] netscape-btn whitespace-nowrap shrink-0 ${
+      disabled ? 'opacity-45 cursor-default' : 'cursor-pointer text-[#000000]'
     }`}
   >
     {icon}
@@ -1041,13 +1156,13 @@ const MenuOption: React.FC<{
     type="button"
     disabled={disabled}
     onClick={onClick}
-    className={`w-full px-3 py-1.5 text-left flex items-center justify-between gap-4 ${
+    className={`w-full px-3 py-1 text-left flex items-center justify-between gap-4 ${
       disabled
-        ? 'text-[#6b7280] cursor-default'
+        ? 'text-[#666666] cursor-default'
         : 'hover:bg-[#000080] hover:text-white cursor-pointer'
     }`}
   >
     <span className="truncate">{label}</span>
-    {shortcut && <span className="text-[10px] opacity-75 shrink-0">{shortcut}</span>}
+    {shortcut && <span className="text-[10px] opacity-80 shrink-0">{shortcut}</span>}
   </button>
 );

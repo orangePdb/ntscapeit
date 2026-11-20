@@ -179,10 +179,15 @@ export function renderNetcenterPage(opts: {
     <tr>
       <td align="center">
         <form action="http://altavista.xserver.net/" method="GET" style="margin:0;">
-          <b>Search the Web:</b>
-          <input type="text" name="q" size="38" placeholder="Try: mozilla, y2k, cyberia, linux..." style="font-family:Verdana;font-size:12px;padding:2px 4px;border:2px inset #cccccc;background:#ffffff;" />
-          <input type="submit" value="Search with AltaVista" style="font-family:Verdana;font-size:12px;padding:2px 10px;background:#cccccc;border:2px outset #ffffff;cursor:pointer;" />
-          &nbsp;<font size="1"><a href="http://altavista.xserver.net/">Advanced Search</a></font>
+          <b>Search:</b>
+          <input type="text" name="q" size="34" placeholder="Try: netscape 1999, mozilla, y2k..." style="font-family:Verdana;font-size:12px;padding:2px 4px;border:2px inset #cccccc;background:#ffffff;" />
+          <select name="mode" style="font-family:Verdana;font-size:12px;border:2px inset #cccccc;background:#ffffff;">
+            <option value="local">Xserver Index</option>
+            <option value="youtube">YouTube Videos</option>
+            <option value="web">Live Web (Interactions)</option>
+          </select>
+          <input type="submit" value="Search" style="font-family:Verdana;font-size:12px;padding:2px 10px;background:#cccccc;border:2px outset #ffffff;cursor:pointer;" />
+          &nbsp;<font size="1"><a href="http://youtube.xserver.net/">YouTube 1999</a></font>
         </form>
       </td>
     </tr>
@@ -196,6 +201,7 @@ export function renderNetcenterPage(opts: {
           <tr><td class="subhdr"><font size="2">NETCENTER CHANNELS</font></td></tr>
           <tr>
             <td>
+              <p style="margin:6px 0;"><b><a href="http://youtube.xserver.net/">YouTube 1999 Gateway</a></b><br><font size="1" color="#444444">Fetch &amp; play real YouTube videos</font></p>
               <p style="margin:6px 0;"><b><a href="http://altavista.xserver.net/">Search &amp; Directory</a></b><br><font size="1" color="#444444">AltaVista index on Xserver</font></p>
               <p style="margin:6px 0;"><b><a href="http://slashdot.xserver.org/">Computing &amp; Tech</a></b><br><font size="1" color="#444444">Slashdot '99 news &amp; Y2K desk</font></p>
               <p style="margin:6px 0;"><b><a href="http://geocities.xserver.net/cyberia/99/">Personal Homepages</a></b><br><font size="1" color="#444444">GeoCities Area51 Cyberia '99</font></p>
@@ -235,12 +241,12 @@ export function renderNetcenterPage(opts: {
           <tr>
             <td style="padding:10px;" bgcolor="#ffffff">
               <img src="${imgUrl}" width="100%" alt="1999 CRT desktop computer running Netcenter" style="display:block;border:1px solid #999999;margin-bottom:8px;" />
-              <font size="3"><b>Welcome to netscapeit on Xserver/1.99</b></font>
+              <font size="3"><b>Welcome to Netscapeit Netcenter (Navigator 4.72)</b></font>
               <p style="line-height:1.5;margin-top:6px;">
-                Built in the spirit of 1999 Netscape Communicator 4.7, <b>netscapeit</b> connects directly to <b>Xserver</b>—a live HTTP/1.0 virtual hosting engine running Classic portals, CGI guestbooks, AltaVista web search, and real-time HTML publishing.
+                Connected to <b>Xserver/1.99</b> (HTTP/1.0). Browse classic virtual hosts, sign GeoCities guestbooks, search AltaVista, and stream <b>YouTube</b> videos formatted for Navigator 4.72.
               </p>
               <p style="line-height:1.5;">
-                Try toggling <b>56k V.90 Modem</b> speed under <i>Communicator &rarr; Preferences</i>, inspect raw HTTP packets in <i>View &rarr; Page Source</i>, or type any live URL in the Location bar!
+                Enter any Web address into the Location bar above—historic sites retrieve archived snapshots via the Internet Archive while current domains load directly. Try <a href="https://www.google.com/">google.com</a> or <a href="https://www.youtube.com/">youtube.com</a>.
               </p>
             </td>
           </tr>
@@ -255,6 +261,7 @@ export function renderNetcenterPage(opts: {
           <tr>
             <td>
               <ul style="margin:6px 0;padding-left:20px;line-height:1.6;">
+                <li><a href="http://youtube.xserver.net/"><b>YouTube 1999 Gateway</b></a> — Search &amp; play real YouTube videos inside Netscape Navigator 4.72!</li>
                 <li><a href="http://geocities.xserver.net/cyberia/99/"><b>Cyberia '99 Homepage</b></a> — Sign the real CGI guestbook &amp; ride the WebRing!</li>
                 <li><a href="http://slashdot.xserver.org/"><b>Slashdot '99 Tech News</b></a> — Y2K server readiness &amp; Mozilla milestone discussions.</li>
                 <li><a href="http://winamp.xserver.com/"><b>Winamp &amp; Shareware Vault</b></a> — Download 1999 classics &amp; play live MIDI tracker audio.</li>
@@ -276,10 +283,10 @@ export function renderNetcenterPage(opts: {
           <tr><td class="subhdr"><font size="2">TODAY'S HEADLINES</font></td></tr>
           <tr>
             <td>
+              <p style="margin:6px 0;"><b>Video:</b> <a href="https://www.youtube.com/watch?v=jNQXAC9IVRw">Watch "Me at the zoo" in Navigator 4.72 Media Player</a></p>
               <p style="margin:6px 0;"><b>Nov 1999:</b> <a href="http://slashdot.xserver.org/">Xserver/1.99 Passes Full Y2K Leap-Year Clock Audit</a></p>
               <p style="margin:6px 0;"><b>Tech:</b> <a href="http://slashdot.xserver.org/">Open-Source Gecko Layout Engine Reaches M11</a></p>
               <p style="margin:6px 0;"><b>Audio:</b> <a href="http://winamp.xserver.com/">Winamp 2.22 Adds Equalizer Presets &amp; Skins</a></p>
-              <p style="margin:6px 0;"><b>Search:</b> <a href="http://altavista.xserver.net/?q=webring">AltaVista Indexes All Xserver User Pages</a></p>
             </td>
           </tr>
         </table>
@@ -289,7 +296,7 @@ export function renderNetcenterPage(opts: {
             <td align="center">
               <font size="1" color="#444444"><b>XSERVER VISITOR COUNTER</b></font><br><br>
               <span class="counter">${paddedHits}</span><br><br>
-              <font size="1" color="#666666">Best viewed with <b>netscapeit 4.7</b><br>at 800x600 or higher.</font>
+              <font size="1" color="#666666">Best viewed with <b>Netscape Navigator 4.72</b><br>at 800x600 or higher.</font>
             </td>
           </tr>
         </table>
@@ -319,10 +326,10 @@ export function renderAltaVistaPage(opts: {
 
   const resultsHtml =
     query.trim() === ''
-      ? `<p><font size="2" color="#333333">Enter keywords above to search all virtual hosts and member pages currently hosted on <b>Xserver/1.99</b>.</font></p>
-         <p><font size="2">Popular queries: <a href="http://altavista.xserver.net/?q=mozilla">mozilla</a> &middot; <a href="http://altavista.xserver.net/?q=y2k">y2k</a> &middot; <a href="http://altavista.xserver.net/?q=winamp">winamp</a> &middot; <a href="http://altavista.xserver.net/?q=guestbook">guestbook</a></font></p>`
+      ? `<p><font size="2" color="#333333">Enter keywords above to search Xserver virtual hosts, YouTube videos, or the live World Wide Web.</font></p>
+         <p><font size="2">Popular queries: <a href="http://altavista.xserver.net/?q=mozilla">mozilla</a> &middot; <a href="http://altavista.xserver.net/?q=y2k">y2k</a> &middot; <a href="http://altavista.xserver.net/?q=netscape&mode=youtube">YouTube: netscape</a></font></p>`
       : results.length === 0
-      ? `<p><font size="2" color="#990000"><b>No documents matched "${qEsc}".</b></font></p><p><font size="2">Try broader keywords or <a href="http://webmaster.xserver.local/builder.html">publish a new page on Xserver</a>.</font></p>`
+      ? `<p><font size="2" color="#990000"><b>No local Xserver documents matched "${qEsc}".</b></font></p><p><font size="2">Try <a href="http://altavista.xserver.net/?q=${encodeURIComponent(query)}&mode=youtube">Search YouTube for "${qEsc}"</a> or <a href="http://altavista.xserver.net/?q=${encodeURIComponent(query)}&mode=web">Search Live Web for "${qEsc}"</a>.</font></p>`
       : `<p><font size="2" color="#006600">AltaVista on Xserver found <b>${results.length}</b> matching web page(s) for <b>"${qEsc}"</b>:</font></p>
          <ol style="line-height:1.55;">
            ${results
@@ -364,8 +371,13 @@ export function renderAltaVistaPage(opts: {
     <tr>
       <td>
         <form action="http://altavista.xserver.net/" method="GET" style="margin:0;">
-          <font size="2"><b>Search Xserver Web Index:</b></font><br><br>
-          <input type="text" name="q" value="${qEsc}" size="50" style="font-size:13px;padding:3px 5px;border:2px inset #cccccc;background:#ffffff;" />
+          <font size="2"><b>Search Web / Xserver / YouTube:</b></font><br><br>
+          <input type="text" name="q" value="${qEsc}" size="44" style="font-size:13px;padding:3px 5px;border:2px inset #cccccc;background:#ffffff;" />
+          <select name="mode" style="font-size:12px;padding:3px;border:2px inset #cccccc;background:#ffffff;">
+            <option value="local">Xserver Local Index</option>
+            <option value="youtube">YouTube Video Search</option>
+            <option value="web">Live Web (Interactions API)</option>
+          </select>
           <input type="submit" value="Search" style="font-size:13px;padding:3px 14px;background:#cccccc;border:2px outset #ffffff;cursor:pointer;" />
         </form>
       </td>

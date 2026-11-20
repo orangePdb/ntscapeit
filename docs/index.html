@@ -1,0 +1,748 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Netscapeit — The Official Website | The Old Web, Brought Back</title>
+  <meta name="description" content="Official website of Netscapeit. Bringing back the classic late-1990s Netscape Navigator browsing experience powered by the Xserver virtual hosting engine.">
+  <meta name="keywords" content="Netscapeit, Netscape, retro browser, Xserver, 1999 web, dial-up, GeoCities, AltaVista, Slashdot">
+  <meta name="author" content="orangePdb">
+
+  <!-- OpenGraph / Social Metadata -->
+  <meta property="og:title" content="Netscapeit — The Old Web, Brought Back">
+  <meta property="og:description" content="Official website for the Netscapeit retro browser project and Xserver virtual hosting engine.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://netscapeit.org/">
+  <meta property="og:image" content="assets/images/retro_netcenter_desk_1795023274734.jpg">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="portal-wrapper">
+
+  <!-- Top Notice Strip: Domains & Status -->
+  <div class="top-notice-bar">
+    <div>
+      <b>OFFICIAL PORTAL:</b> <span class="domain-pill">netscapeit.org</span>
+      &nbsp;|&nbsp;
+      <b>WEB APPLICATION:</b> <span class="domain-pill"><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">netscp.netscapeit.org</a></span>
+    </div>
+    <div>
+      <span style="color:#ffcc00;">★ Project Status:</span> Early Development &nbsp;|&nbsp;
+      <a href="https://github.com/orangePdb/ntscapeit" target="_blank" rel="noopener">GitHub: orangePdb/ntscapeit</a>
+    </div>
+  </div>
+
+  <!-- Main Corporate Header -->
+  <header class="main-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo-group">
+        <div class="logo-throbber" title="Netscapeit Logo">
+          <div class="n-mark">N</div>
+        </div>
+        <div class="logo-text">
+          <h1>netscape<span>it</span></h1>
+          <div class="logo-tagline">Bringing the old web back to life &bull; Est. 1999 / 2026</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="header-status-badge">
+          <span class="status-dot"></span>
+          <span>Xserver Engine 1.99: <b>Online</b></span>
+        </div>
+        <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-orange">
+          🌐 Launch Web Version
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Classic Navigation Bar -->
+  <nav class="main-nav-bar" aria-label="Main Navigation">
+    <ul class="nav-tabs">
+      <li class="active"><a href="index.html" data-tab-target="home">Home</a></li>
+      <li><a href="download.html">Download</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#screenshots">Screenshots</a></li>
+      <li><a href="docs.html">Documentation</a></li>
+      <li><a href="about.html">About</a></li>
+      <li class="highlight-tab"><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">🚀 Open Browser App</a></li>
+    </ul>
+  </nav>
+
+  <!-- Sub-Nav Strip -->
+  <div class="sub-nav-strip">
+    <div class="sub-nav-links">
+      <a href="#download">&raquo; Download Matrix</a>
+      <a href="#xserver">&raquo; Xserver Architecture</a>
+      <a href="#virtual-sites">&raquo; Virtual 1999 Sites</a>
+      <a href="#faq">&raquo; Quick FAQ</a>
+      <a href="https://github.com/orangePdb/ntscapeit/issues" target="_blank" rel="noopener">&raquo; Bug Tracker</a>
+    </div>
+    <div>
+      <button id="playModemBtn" type="button" class="btn-retro" style="font-size:11px;padding:2px 8px;">
+        🔊 Test 56k Handshake
+      </button>
+    </div>
+  </div>
+
+  <!-- Portal Content Layout: 3-Column Retro Layout -->
+  <div class="portal-content">
+
+    <!-- LEFT SIDEBAR: Software Channels & Direct Links -->
+    <aside class="sidebar-left">
+
+      <!-- Channel Index Box -->
+      <div class="retro-box">
+        <div class="box-header">NETSCAPEIT CHANNELS</div>
+        <div class="box-body compact">
+          <ul class="sidebar-nav-list">
+            <li>
+              <a href="index.html"><b>Portal Homepage</b></a>
+              <span class="subtext">Overview & announcements</span>
+            </li>
+            <li>
+              <a href="download.html"><b>Download Center</b></a>
+              <span class="subtext">Win, Mac, Linux & Web</span>
+            </li>
+            <li>
+              <a href="docs.html"><b>Technical Manual</b></a>
+              <span class="subtext">Xserver & API documentation</span>
+            </li>
+            <li>
+              <a href="#features"><b>Core Capabilities</b></a>
+              <span class="subtext">Dial-up, composer, virtual sites</span>
+            </li>
+            <li>
+              <a href="#screenshots"><b>Gallery & Media</b></a>
+              <span class="subtext">CRT screens & interface captures</span>
+            </li>
+            <li>
+              <a href="about.html"><b>Project & Author</b></a>
+              <span class="subtext">About orangePdb & development</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Xserver Status Box -->
+      <div class="retro-box">
+        <div class="box-header orange-hdr">XSERVER 1.99 STATUS</div>
+        <div class="box-body">
+          <table width="100%" cellpadding="2" cellspacing="0" style="font-size:11px;">
+            <tr><td><b>Protocol:</b></td><td>RFC 1945 HTTP/1.0</td></tr>
+            <tr><td><b>Port:</b></td><td>3000 / 80 (Virtual)</td></tr>
+            <tr><td><b>Millennium:</b></td><td><font color="#008000"><b>Y2K Compliant</b></font></td></tr>
+            <tr><td><b>Virtual Hosts:</b></td><td>8 Pre-configured</td></tr>
+            <tr><td><b>CGI-BIN:</b></td><td>Guestbook & Comments</td></tr>
+          </table>
+          <div style="margin-top:8px;border-top:1px dotted #ccc;padding-top:6px;text-align:center;">
+            <a href="docs.html#xserver" class="btn-retro" style="font-size:10px;">Xserver Docs &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Web App Box -->
+      <div class="retro-box">
+        <div class="box-header gray-hdr">LIVE WEB APPLICATION</div>
+        <div class="box-body" style="text-align:center;">
+          <p style="font-size:11px;margin-bottom:8px;">Experience the complete Netscapeit browser directly in your current web browser!</p>
+          <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-navy" style="width:100%;font-size:11px;">
+            netscp.netscapeit.org
+          </a>
+          <span style="display:block;font-size:10px;color:#666;margin-top:4px;">No installation required</span>
+        </div>
+      </div>
+
+      <!-- Retro Era Badges -->
+      <div class="retro-box" style="text-align:center;padding:8px;">
+        <div style="font-size:10px;font-weight:bold;margin-bottom:6px;color:#444;">ERA CERTIFICATION</div>
+        <img src="https://img.shields.io/badge/era-1999-orange" alt="Era 1999" style="margin-bottom:4px;"><br>
+        <img src="https://img.shields.io/badge/status-early%20development-yellow" alt="Status" style="margin-bottom:4px;"><br>
+        <img src="https://img.shields.io/badge/server-Xserver-blue" alt="Xserver">
+      </div>
+
+    </aside>
+
+    <!-- CENTER MAIN COLUMN: Hero, Download, Features, Docs, FAQ -->
+    <main class="main-column">
+
+      <!-- HERO BANNER -->
+      <section class="hero-box" id="home">
+        <div class="hero-box-header">
+          <span>FEATURED SOFTWARE RELEASE &bull; NETSCAPEIT BROWSER SUITE</span>
+          <span style="color:#ffcc00;">BUILD v0.1.0 (PRE-RELEASE)</span>
+        </div>
+
+        <div class="hero-content">
+          <div class="hero-image-wrap">
+            <img src="assets/images/retro_netcenter_desk_1795023274734.jpg" alt="1999 CRT Desktop computer running Netscapeit Netcenter">
+            <div class="hero-caption">Netcenter on 1999 CRT workstation</div>
+          </div>
+
+          <div class="hero-text">
+            <h1>The old web, brought back.</h1>
+            <div class="hero-sub">Rediscover the thrill of the 1998–2003 World Wide Web.</div>
+            <p>
+              <b>Netscapeit</b> is a retro-inspired web browser and virtual internet ecosystem crafted to recreate the unforgettable experience of browsing at the turn of the millennium. Powered by <b>Xserver</b>, Netscapeit revives the authentic speed, aesthetic, and discovery of the late-90s web without modern tracker bloat or generic layouts.
+            </p>
+
+            <div class="hero-buttons">
+              <a href="#download" class="btn-retro btn-orange btn-large">
+                💾 Download Netscapeit
+              </a>
+              <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-navy btn-large">
+                🚀 Launch Web Version
+              </a>
+            </div>
+
+            <div class="badge-callout">
+              <b>Notice:</b> Netscapeit is in active early development. Try the live web version at <code>netscp.netscapeit.org</code> or build locally via Git!
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOWNLOAD CENTER -->
+      <section class="download-section" id="download">
+        <div class="download-banner">
+          <span>DOWNLOAD CENTER &bull; PLATFORM MATRIX</span>
+          <span style="font-size:11px;font-weight:normal;">Updated for 2026</span>
+        </div>
+
+        <div style="padding:12px;">
+          <p>
+            Netscapeit is available as a live web application hosted at <b>netscp.netscapeit.org</b>, and as an open-source development suite. Standalone native binaries for Windows, macOS, and Linux are currently in active development.
+          </p>
+
+          <table class="download-matrix-table">
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>Target Systems</th>
+                <th>Status</th>
+                <th>Version / Date</th>
+                <th>Download / Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <span class="os-badge">
+                    <span style="color:#0078d7;font-size:16px;">🪟</span>
+                    <b>Microsoft Windows</b>
+                  </span>
+                </td>
+                <td>Windows 98, 2000, XP, 10, 11</td>
+                <td><span class="status-tag dev">In Development</span></td>
+                <td>v0.1.0-alpha &bull; Active</td>
+                <td>
+                  <button type="button" class="btn-retro" data-download-os="windows">
+                    Windows Setup (.exe)
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="os-badge">
+                    <span style="color:#000000;font-size:16px;">🍎</span>
+                    <b>Apple macOS</b>
+                  </span>
+                </td>
+                <td>macOS (Apple Silicon & Intel)</td>
+                <td><span class="status-tag dev">In Development</span></td>
+                <td>v0.1.0-alpha &bull; Active</td>
+                <td>
+                  <button type="button" class="btn-retro" data-download-os="macos">
+                    macOS Disk Image (.dmg)
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="os-badge">
+                    <span style="color:#e95420;font-size:16px;">🐧</span>
+                    <b>Linux / X11</b>
+                  </span>
+                </td>
+                <td>glibc 2.31+, X11 & Wayland</td>
+                <td><span class="status-tag dev">In Development</span></td>
+                <td>v0.1.0-alpha &bull; Active</td>
+                <td>
+                  <button type="button" class="btn-retro" data-download-os="linux">
+                    Linux Package (.tar.gz)
+                  </button>
+                </td>
+              </tr>
+              <tr style="background-color:#fffde6;">
+                <td>
+                  <span class="os-badge">
+                    <span style="color:#ff6600;font-size:16px;">🌐</span>
+                    <b>Official Web App</b>
+                  </span>
+                </td>
+                <td>Any modern web browser (Edge, Chrome, Safari, Firefox)</td>
+                <td><span class="status-tag active">Verified &amp; Live</span></td>
+                <td>Latest Production Build</td>
+                <td>
+                  <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-orange">
+                    Launch netscp &rarr;
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Source Code Build Box -->
+          <div class="source-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <b>🛠️ Developer Source Build (Verified Working):</b>
+              <button type="button" class="btn-retro" data-copy-target="git-commands-home" style="font-size:10px;">
+                Copy Commands
+              </button>
+            </div>
+            <pre id="git-commands-home">git clone https://github.com/orangePdb/ntscapeit.git
+cd ntscapeit
+npm install
+npm run dev</pre>
+            <div style="font-size:10px;color:#555;margin-top:4px;">
+              Requires Node.js 18+ and npm. Starts the local Vite development server and companion Xserver engine on <code>http://localhost:3000</code>.
+            </div>
+          </div>
+
+          <!-- System Requirements & Changelog Summary -->
+          <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="retro-box" style="margin:0;">
+              <div class="box-header gray-hdr">MINIMUM SYSTEM SPECS</div>
+              <div class="box-body" style="font-size:11px;">
+                <ul style="margin:0;padding-left:18px;">
+                  <li><b>CPU:</b> Pentium II 233 MHz or modern dual-core processor</li>
+                  <li><b>RAM:</b> 64 MB (Physical 1999 spec) / 2 GB (Modern Node.js build)</li>
+                  <li><b>Display:</b> 800x600 SVGA with 16-bit High Color or higher</li>
+                  <li><b>Audio:</b> Sound Blaster 16 compatible or modern Web Audio</li>
+                  <li><b>Network:</b> 56k V.90 Modem or broadband connection</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="retro-box" style="margin:0;">
+              <div class="box-header gray-hdr">CURRENT CHANGELOG (v0.1.0)</div>
+              <div class="box-body" style="font-size:11px;">
+                <ul style="margin:0;padding-left:18px;">
+                  <li>Integrated full <b>Xserver HTTP/1.0</b> hosting engine.</li>
+                  <li>Implemented <b>AltaVista</b> full-text search index.</li>
+                  <li>Added <b>GeoCities Cyberia '99</b> &amp; live CGI guestbook.</li>
+                  <li>Added <b>Slashdot '99</b> Y2K news &amp; threaded discussion.</li>
+                  <li>Added <b>Netscape Composer</b> live HTML authoring.</li>
+                </ul>
+                <div style="text-align:right;margin-top:4px;">
+                  <a href="download.html">Full Release Notes &rarr;</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- FEATURES SECTION -->
+      <section id="features">
+        <h2>Features &amp; Capabilities</h2>
+        <p>
+          Netscapeit is engineered to give you the tactile, visual, and operational feel of the classic internet, backed by modern technology.
+        </p>
+
+        <div class="features-grid">
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>Classic Netscape-Inspired Browsing</h3>
+            </div>
+            <p>
+              Authentic beveled toolbars, navigation buttons (Back, Forward, Reload, Home, Search, Netscape Netcenter), persistent bookmarks, and the iconic animated star-shower <b>"N" throbber</b>.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>Xserver Companion Engine</h3>
+            </div>
+            <p>
+              Built-in HTTP/1.0 virtual hosting router (<code>xserver/sites.ts</code>) serving standard RFC 1945 headers, status codes, simulated server load statistics, and real-time response inspection.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>Virtual Websites &amp; Domains</h3>
+            </div>
+            <p>
+              Surf simulated 1999 websites: <b>AltaVista</b> web search, <b>Slashdot '99</b> Y2K discussions, <b>GeoCities Cyberia '99</b>, <b>Winamp 2.22 Vault</b>, and the <b>SpaceJam Planet 1999 WebRing</b>.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>CGI-BIN Guestbooks &amp; Comments</h3>
+            </div>
+            <p>
+              Interact with functional late-90s web components! Sign the Cyberia guestbook, post comments on Slashdot stories, and view persistent visitor entries.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>Netscape Composer (HTML Builder)</h3>
+            </div>
+            <p>
+              Create your own personal retro website with the built-in Composer tool. Write classic HTML, publish directly to Xserver, and receive your own <code>http://xserver.local/pages/</code> URL!
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-card-header">
+              <span class="feature-bullet">&diams;</span>
+              <h3>56k Modem &amp; Dial-Up Simulation</h3>
+            </div>
+            <p>
+              Experience authentic 56k V.90, ISDN, or T1 connection throttling. Includes synthesized dial-up audio handshakes and retro chiptune audio generated dynamically with the Web Audio API.
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SCREENSHOTS GALLERY -->
+      <section id="screenshots">
+        <h2>Interface Gallery &amp; Screenshots</h2>
+        <p>
+          Explore verified visuals and environments from the Netscapeit ecosystem. Click any capture to open the high-resolution viewer.
+        </p>
+
+        <div class="screenshots-container">
+
+          <div class="screenshot-item"
+               data-screenshot-src="assets/images/retro_netcenter_desk_1795023274734.jpg"
+               data-screenshot-title="Netcenter Portal on 1999 CRT Desktop"
+               data-screenshot-desc="Authentic 1999 CRT monitor displaying Netscapeit Communicator 4.7 running the Netcenter portal with late-90s stock tickers and AltaVista search.">
+            <div class="screenshot-thumb-wrap">
+              <img src="assets/images/retro_netcenter_desk_1795023274734.jpg" alt="1999 CRT workstation running Netcenter">
+            </div>
+            <div class="screenshot-caption">Netcenter Portal Desk</div>
+            <div class="screenshot-subtext">Click to view high-res</div>
+          </div>
+
+          <div class="screenshot-item"
+               data-screenshot-src="assets/images/cyberia_99_portal_1795023275146.jpg"
+               data-screenshot-title="GeoCities Cyberia '99 Personal Homepage"
+               data-screenshot-desc="Classic personal web page in GeoCities Area51 Cyberia neighborhood featuring Under Construction GIF banners, Bryce 3D graphics, and guestbook.">
+            <div class="screenshot-thumb-wrap">
+              <img src="assets/images/cyberia_99_portal_1795023275146.jpg" alt="GeoCities Cyberia 99 Portal">
+            </div>
+            <div class="screenshot-caption">GeoCities Cyberia '99</div>
+            <div class="screenshot-subtext">Click to view high-res</div>
+          </div>
+
+          <div class="screenshot-item"
+               data-screenshot-src="assets/images/y2k_mainframe_chip_1795023276397.jpg"
+               data-screenshot-title="Xserver Y2K Compliance Audit Desk"
+               data-screenshot-desc="Server-side diagnostic view demonstrating Xserver 1.99 passing the 4-digit rollover tests as covered on Slashdot '99.">
+            <div class="screenshot-thumb-wrap">
+              <img src="assets/images/y2k_mainframe_chip_1795023276397.jpg" alt="Y2K Mainframe hardware">
+            </div>
+            <div class="screenshot-caption">Y2K Audit &amp; Hardware</div>
+            <div class="screenshot-subtext">Click to view high-res</div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- DOCUMENTATION QUICK GUIDE -->
+      <section id="docs">
+        <h2>Documentation &amp; Getting Started</h2>
+        <p>
+          Quick reference for running Netscapeit locally, configuring Xserver, and developing custom retro sites.
+        </p>
+
+        <div class="retro-box">
+          <div class="box-header">QUICK START GUIDE</div>
+          <div class="box-body">
+            <h4>1. System Prerequisites</h4>
+            <p>Ensure you have <b>Node.js 18.0 or newer</b> and <b>npm</b> installed on your operating system.</p>
+
+            <h4>2. Clone &amp; Install</h4>
+            <p>Fetch the repository from GitHub and install all client and server dependencies:</p>
+            <pre style="background:#000;color:#0f0;padding:8px;font-family:Courier New;font-size:11px;border:1px inset #888;">git clone https://github.com/orangePdb/ntscapeit.git
+cd ntscapeit
+npm install</pre>
+
+            <h4>3. Start Development Server</h4>
+            <p>Launch the combined Vite frontend and Express Xserver engine:</p>
+            <pre style="background:#000;color:#0f0;padding:8px;font-family:Courier New;font-size:11px;border:1px inset #888;">npm run dev</pre>
+            <p>Open your browser and navigate to <code>http://localhost:3000</code>. You will see the Netscapeit Communicator interface ready to browse!</p>
+
+            <div style="margin-top:8px;text-align:right;">
+              <a href="docs.html" class="btn-retro">Open Complete Documentation Manual &rarr;</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- FREQUENTLY ASKED QUESTIONS -->
+        <div class="retro-box" id="faq">
+          <div class="box-header orange-hdr">FREQUENTLY ASKED QUESTIONS (FAQ)</div>
+          <div class="box-body">
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Is Netscapeit using the original Netscape Navigator source code?</span>
+                <span class="indicator">[+]</span>
+              </div>
+              <div class="faq-answer" style="display:none;">
+                <b>No.</b> Netscapeit is an authentic modern reimplementation built using TypeScript, React 19, and Vite. Legacy browser engine integration (such as embedding original Mozilla/Gecko or early layout engines) is planned as a future project milestone, as documented in the project goals.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>What is the difference between netscapeit.org and netscp.netscapeit.org?</span>
+                <span class="indicator">[+]</span>
+              </div>
+              <div class="faq-answer" style="display:none;">
+                <b>netscapeit.org</b> is this official software website—providing documentation, platform downloads, news, and project information. <b>netscp.netscapeit.org</b> is the actual Netscapeit browser web application where you can interactively experience browsing the retro web.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>What is Xserver and how does it work?</span>
+                <span class="indicator">[+]</span>
+              </div>
+              <div class="faq-answer" style="display:none;">
+                Xserver is the companion HTTP/1.0 virtual hosting engine that powers the Netscapeit ecosystem. It emulates multiple 1999 virtual hosts (AltaVista, Slashdot, GeoCities, Netcenter), parses raw HTTP headers, and handles CGI guestbook forms and user-published websites.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-question">
+                <span>Can Netscapeit browse modern HTTPS websites?</span>
+                <span class="indicator">[+]</span>
+              </div>
+              <div class="faq-answer" style="display:none;">
+                Yes, Netscapeit includes an HTTP/HTTPS proxy and iframe bridge that allows loading live external web pages while applying optional retro styling, connection throttling, and security lock indicators.
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECT INFORMATION -->
+      <section id="about" class="retro-box">
+        <div class="box-header">ABOUT THE NETSCAPEIT PROJECT</div>
+        <div class="box-body">
+          <p>
+            <b>Netscapeit</b> was founded by <b>orangePdb</b> with a singular mission: <i>Small pieces of the old internet, rebuilt.</i>
+          </p>
+          <p>
+            In an era of hyper-commercialized, algorithm-driven feeds and cookie-cutter flat design, the early web offered something special: genuine discovery, quirky personal identity, raw HTML creativity, and a spirit of pioneering exploration. Netscapeit honors that legacy through a fully interactive web environment.
+          </p>
+
+          <table width="100%" cellpadding="4" cellspacing="0" style="font-size:11px;border-top:1px dotted #ccc;margin-top:8px;">
+            <tr><td width="30%"><b>Project Name:</b></td><td>Netscapeit</td></tr>
+            <tr><td><b>Author / Maintainer:</b></td><td>orangePdb</td></tr>
+            <tr><td><b>Official Website:</b></td><td><a href="https://netscapeit.org">https://netscapeit.org</a></td></tr>
+            <tr><td><b>Web Application:</b></td><td><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">https://netscp.netscapeit.org</a></td></tr>
+            <tr><td><b>Repository:</b></td><td><a href="https://github.com/orangePdb/ntscapeit" target="_blank" rel="noopener">https://github.com/orangePdb/ntscapeit</a></td></tr>
+            <tr><td><b>License:</b></td><td>Open Source Project</td></tr>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- RIGHT SIDEBAR: Tech Specs & Stock Tickers -->
+    <aside class="sidebar-right">
+
+      <!-- 1999 Tech Markets Widget -->
+      <div class="retro-box">
+        <div class="box-header">1999 TECH TICKERS</div>
+        <div class="box-body compact">
+          <table width="100%" cellpadding="2" cellspacing="0" style="font-size:11px;font-family:Courier New, monospace;">
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><b>NSCP</b></td>
+              <td align="right">92.50</td>
+              <td align="right"><font color="#008000">+4.25</font></td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><b>YHOO</b></td>
+              <td align="right">184.75</td>
+              <td align="right"><font color="#008000">+11.12</font></td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><b>SUNW</b></td>
+              <td align="right">78.38</td>
+              <td align="right"><font color="#008000">+2.00</font></td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><b>AMZN</b></td>
+              <td align="right">85.19</td>
+              <td align="right"><font color="#cc0000">-1.50</font></td>
+            </tr>
+            <tr>
+              <td><b>SGI</b></td>
+              <td align="right">16.25</td>
+              <td align="right"><font color="#008000">+0.38</font></td>
+            </tr>
+          </table>
+          <div style="font-size:9px;color:#777;margin-top:4px;text-align:center;">
+            Simulated late-90s market desk
+          </div>
+        </div>
+      </div>
+
+      <!-- WebRing Box -->
+      <div class="retro-box">
+        <div class="box-header orange-hdr">XSERVER WEBRING</div>
+        <div class="box-body" style="font-size:11px;text-align:center;">
+          <p style="margin-bottom:6px;"><b>[ Planet 1999 Ring ]</b></p>
+          <div style="font-size:10px;margin-bottom:8px;">
+            <a href="https://netscp.netscapeit.org" target="_blank">&laquo; Prev</a> &bull;
+            <a href="https://netscp.netscapeit.org" target="_blank">Random</a> &bull;
+            <a href="https://netscp.netscapeit.org" target="_blank">Next &raquo;</a>
+          </div>
+          <span style="font-size:9px;color:#666;">Site #042 in the WebRing</span>
+        </div>
+      </div>
+
+      <!-- Quick Tips Box -->
+      <div class="retro-box">
+        <div class="box-header gray-hdr">RETRO BROWSING TIP</div>
+        <div class="box-body" style="font-size:11px;">
+          <p>
+            Toggle connection speed in the browser preferences to experience authentic <b>56k dial-up packet pacing</b>!
+          </p>
+          <hr size="1" color="#ccc" style="margin:6px 0;">
+          <p>
+            Use <i>Netscape Composer</i> to write and host your own web page directly on the local Xserver.
+          </p>
+        </div>
+      </div>
+
+      <!-- Visitor Hit Counter -->
+      <div class="retro-box" style="text-align:center;">
+        <div class="box-header">VISITOR COUNTER</div>
+        <div class="box-body">
+          <span style="background:#000;color:#00ff66;font-family:Courier New;font-weight:bold;padding:2px 8px;border:2px inset #666;font-size:14px;letter-spacing:2px;">
+            0 1 4 2 8 9
+          </span>
+          <div style="font-size:9px;color:#666;margin-top:4px;">
+            Hits since Nov 1999
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="main-footer">
+    <div class="footer-top">
+
+      <div class="footer-col" style="flex:2;min-width:240px;">
+        <h4>ABOUT NETSCAPEIT.ORG</h4>
+        <p style="color:#b0cce8;margin-bottom:8px;">
+          Netscapeit is an open-source retro web browser and Xserver hosting environment bringing the authentic experience of the late-1990s internet back to life.
+        </p>
+        <div class="footer-badges">
+          <span class="retro-web-badge badge-netscape">Netscape Now 4.7</span>
+          <span class="retro-web-badge badge-html">HTML 4.01 Valid</span>
+          <span class="retro-web-badge badge-y2k">Y2K Ready 2000</span>
+          <span class="retro-web-badge">800x600 Best</span>
+        </div>
+      </div>
+
+      <div class="footer-col" style="flex:1;min-width:140px;">
+        <h4>NAVIGATION</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="download.html">Download Center</a></li>
+          <li><a href="docs.html">Documentation</a></li>
+          <li><a href="about.html">About &amp; History</a></li>
+          <li><a href="#screenshots">Screenshots</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col" style="flex:1;min-width:140px;">
+        <h4>DOMAINS &amp; CODE</h4>
+        <ul>
+          <li><a href="https://netscapeit.org">Official Website</a></li>
+          <li><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">Web Application</a></li>
+          <li><a href="https://github.com/orangePdb/ntscapeit" target="_blank" rel="noopener">GitHub Repository</a></li>
+          <li><a href="https://github.com/orangePdb/ntscapeit/issues" target="_blank" rel="noopener">Issue Tracker</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <div>
+        &copy; 1999–2026 <b>Netscapeit Project</b> &bull; Created by <b>orangePdb</b>. All trademarks are property of their respective owners.
+      </div>
+      <div>
+        Hosted on <b>netscapeit.org</b> &bull; Companion to <b>netscp.netscapeit.org</b>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- SCREENSHOT MODAL VIEWER -->
+<div class="modal-overlay" id="screenshotModal">
+  <div class="retro-window">
+    <div class="window-title-bar">
+      <span id="modalTitle">Netscapeit Media Viewer</span>
+      <div class="window-controls">
+        <button type="button" id="closeModalBtn" aria-label="Close window">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div style="background:#000;border:1px inset #888;overflow:hidden;max-height:460px;display:flex;align-items:center;justify-content:center;">
+        <img id="modalImage" src="" alt="Screenshot" style="max-width:100%;max-height:460px;display:block;">
+      </div>
+      <p id="modalDescription" style="margin-top:8px;font-size:11px;color:#333;line-height:1.4;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- DOWNLOAD VERIFICATION MODAL -->
+<div class="modal-overlay" id="downloadModal">
+  <div class="retro-window" style="max-width:540px;">
+    <div class="window-title-bar">
+      <span id="dlModalTitle">Download Netscapeit</span>
+      <div class="window-controls">
+        <button type="button" id="closeDlModalBtn" aria-label="Close window">✕</button>
+      </div>
+    </div>
+    <div class="window-body">
+      <div id="dlModalBody" style="font-size:12px;line-height:1.5;"></div>
+      <div style="margin-top:12px;display:flex;justify-content:flex-end;gap:8px;">
+        <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-orange">Launch Web Version</a>
+        <a href="https://github.com/orangePdb/ntscapeit" target="_blank" rel="noopener" class="btn-retro">Visit GitHub Repo</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Script -->
+<script src="assets/js/main.js"></script>
+</body>
+</html>

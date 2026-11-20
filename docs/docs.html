@@ -1,0 +1,361 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — Netscapeit &amp; Xserver Technical Reference</title>
+  <meta name="description" content="Official technical documentation for Netscapeit and Xserver 1.99. Setup guides, architecture reference, CGI endpoints, troubleshooting, and FAQ.">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="portal-wrapper">
+
+  <!-- Top Notice Strip -->
+  <div class="top-notice-bar">
+    <div>
+      <b>OFFICIAL PORTAL:</b> <span class="domain-pill">netscapeit.org</span>
+      &nbsp;|&nbsp;
+      <b>WEB APPLICATION:</b> <span class="domain-pill"><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">netscp.netscapeit.org</a></span>
+    </div>
+    <div>
+      <a href="https://github.com/orangePdb/ntscapeit" target="_blank" rel="noopener">GitHub: orangePdb/ntscapeit</a>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="main-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo-group">
+        <div class="logo-throbber">
+          <div class="n-mark">N</div>
+        </div>
+        <div class="logo-text">
+          <h1>netscape<span>it</span></h1>
+          <div class="logo-tagline">Documentation &bull; Technical Manual &bull; Xserver Guide</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <a href="https://netscp.netscapeit.org" target="_blank" rel="noopener" class="btn-retro btn-orange">
+          🌐 Launch Web Version
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav class="main-nav-bar" aria-label="Main Navigation">
+    <ul class="nav-tabs">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="download.html">Download</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="index.html#screenshots">Screenshots</a></li>
+      <li class="active"><a href="docs.html">Documentation</a></li>
+      <li><a href="about.html">About</a></li>
+      <li class="highlight-tab"><a href="https://netscp.netscapeit.org" target="_blank" rel="noopener">🚀 Open Browser App</a></li>
+    </ul>
+  </nav>
+
+  <!-- Sub-Nav -->
+  <div class="sub-nav-strip">
+    <div class="sub-nav-links">
+      <a href="#getting-started">&raquo; Getting Started</a>
+      <a href="#installation">&raquo; Installation</a>
+      <a href="#xserver-spec">&raquo; Xserver Architecture</a>
+      <a href="#cgi-reference">&raquo; CGI Endpoints</a>
+      <a href="#troubleshooting">&raquo; Troubleshooting</a>
+      <a href="#faq">&raquo; FAQ</a>
+    </div>
+    <div style="font-size:11px;color:#003366;">
+      Manual Revision: 1.99.4
+    </div>
+  </div>
+
+  <!-- Content Layout -->
+  <div class="portal-content">
+
+    <!-- Left Sidebar: Manual Table of Contents -->
+    <aside class="sidebar-left">
+      <div class="retro-box">
+        <div class="box-header">TABLE OF CONTENTS</div>
+        <div class="box-body compact">
+          <ul class="sidebar-nav-list">
+            <li><a href="#getting-started"><b>1. Getting Started</b></a><span class="subtext">Overview &amp; prerequisites</span></li>
+            <li><a href="#installation"><b>2. Installation Guide</b></a><span class="subtext">Local setup &amp; npm scripts</span></li>
+            <li><a href="#xserver-spec"><b>3. Xserver 1.99 Engine</b></a><span class="subtext">HTTP/1.0 &amp; virtual hosts</span></li>
+            <li><a href="#cgi-reference"><b>4. CGI-BIN Specification</b></a><span class="subtext">Guestbooks, comments &amp; pages</span></li>
+            <li><a href="#composer-guide"><b>5. Netscape Composer</b></a><span class="subtext">Creating &amp; publishing pages</span></li>
+            <li><a href="#audio-engine"><b>6. Audio &amp; Modem Engine</b></a><span class="subtext">Web Audio oscillator synthesis</span></li>
+            <li><a href="#troubleshooting"><b>7. Troubleshooting</b></a><span class="subtext">Common errors &amp; solutions</span></li>
+            <li><a href="#faq"><b>8. Extended FAQ</b></a><span class="subtext">Frequently asked questions</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="retro-box">
+        <div class="box-header gray-hdr">SOURCE CODE REPO</div>
+        <div class="box-body" style="font-size:11px;">
+          <p>Read the actual implementation files directly:</p>
+          <ul style="padding-left:16px;margin:4px 0;">
+            <li><code>server.ts</code> (Express backend)</li>
+            <li><code>xserver/sites.ts</code> (Virtual hosts)</li>
+            <li><code>src/App.tsx</code> (Browser shell)</li>
+          </ul>
+          <a href="https://github.com/orangePdb/ntscapeit" target="_blank" class="btn-retro" style="font-size:10px;margin-top:6px;display:block;text-align:center;">
+            View on GitHub &rarr;
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-column">
+
+      <h2>Netscapeit &amp; Xserver Technical Documentation</h2>
+      <p>
+        This manual provides complete documentation for developers, contributors, and retro-computing enthusiasts seeking to run, extend, or build upon the Netscapeit platform.
+      </p>
+
+      <!-- 1. GETTING STARTED -->
+      <section class="retro-box" id="getting-started">
+        <div class="box-header">1. GETTING STARTED</div>
+        <div class="box-body">
+          <p>
+            Netscapeit is composed of two primary tiers:
+          </p>
+          <ol style="padding-left:20px;line-height:1.6;">
+            <li><b>The Client Browser:</b> A single-page application built in React 19, TypeScript, and Tailwind CSS v4 that faithfully emulates the layout, navigation, menus, and styling of Netscape Communicator 4.7.</li>
+            <li><b>The Xserver Backend:</b> An Express.js and TypeScript service (<code>server.ts</code> and <code>xserver/sites.ts</code>) that acts as an RFC 1945 HTTP/1.0 server, dispatching requests across virtual hosts and handling CGI forms.</li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- 2. INSTALLATION -->
+      <section class="retro-box" id="installation">
+        <div class="box-header orange-hdr">2. INSTALLATION GUIDE</div>
+        <div class="box-body">
+          <h4>Prerequisites</h4>
+          <ul>
+            <li>Node.js version 18.0.0 or higher.</li>
+            <li>npm version 9.0.0 or higher.</li>
+            <li>Git.</li>
+          </ul>
+
+          <h4>Commands</h4>
+          <pre style="background:#000;color:#0f0;font-family:Courier New;font-size:11px;padding:8px;border:1px inset #888;"># Step 1: Clone the repository
+git clone https://github.com/orangePdb/ntscapeit.git
+cd ntscapeit
+
+# Step 2: Install required packages
+npm install
+
+# Step 3: Run development server
+npm run dev</pre>
+
+          <h4>Available NPM Scripts (package.json)</h4>
+          <table width="100%" cellpadding="4" cellspacing="0" style="font-size:11px;border-collapse:collapse;margin-top:8px;">
+            <tr style="background:#e5ecf4;">
+              <th align="left" width="25%">Script</th>
+              <th align="left">Command</th>
+              <th align="left">Description</th>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>npm run dev</code></td>
+              <td><code>tsx server.ts</code></td>
+              <td>Starts the Express server with live Vite HMR middleware.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>npm run build</code></td>
+              <td><code>vite build</code></td>
+              <td>Compiles the frontend assets into the <code>dist/</code> folder.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>npm run lint</code></td>
+              <td><code>tsc --noEmit</code></td>
+              <td>Performs TypeScript type-checking across the repository.</td>
+            </tr>
+            <tr>
+              <td><code>npm start</code></td>
+              <td><code>node server.ts</code></td>
+              <td>Runs the production server.</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- 3. XSERVER ARCHITECTURE -->
+      <section class="retro-box" id="xserver-spec">
+        <div class="box-header">3. XSERVER 1.99 ARCHITECTURE &amp; VIRTUAL HOSTS</div>
+        <div class="box-body">
+          <p>
+            Xserver implements a virtual hosting engine configured in <code>xserver/sites.ts</code>. All requests arriving through the browser's Location bar are parsed and routed to their respective virtual website template:
+          </p>
+
+          <table width="100%" cellpadding="6" cellspacing="0" style="font-size:11px;border-collapse:collapse;">
+            <tr style="background:#e5ecf4;">
+              <th align="left">Virtual Host</th>
+              <th align="left">Render Function</th>
+              <th align="left">Description</th>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>home.netscapeit.com</code></td>
+              <td><code>renderNetcenterPage()</code></td>
+              <td>Default homepage portal, stock tickers, and featured news.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>altavista.xserver.net</code></td>
+              <td><code>renderAltaVistaPage()</code></td>
+              <td>Full-text search engine querying internal indexed docs.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>geocities.xserver.net</code></td>
+              <td><code>renderGeoCitiesPage()</code></td>
+              <td>Area51 Cyberia '99 personal homepage &amp; guestbook.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>slashdot.xserver.org</code></td>
+              <td><code>renderSlashdotPage()</code></td>
+              <td>News for nerds with threaded comment system.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>winamp.xserver.com</code></td>
+              <td><code>renderWinampVaultPage()</code></td>
+              <td>Winamp 2.22 skin vault, shareware &amp; chiptune tracks.</td>
+            </tr>
+            <tr style="border-bottom:1px dotted #ccc;">
+              <td><code>spacejam.xserver.org</code></td>
+              <td><code>renderSpaceJamHubPage()</code></td>
+              <td>Planet 1999 WebRing hub &amp; retro graphics.</td>
+            </tr>
+            <tr>
+              <td><code>xserver.local</code></td>
+              <td><code>renderUserPage()</code></td>
+              <td>Hosts user-published pages created with Composer.</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- 4. CGI ENDPOINTS -->
+      <section class="retro-box" id="cgi-reference">
+        <div class="box-header orange-hdr">4. CGI-BIN SPECIFICATION</div>
+        <div class="box-body">
+          <p>
+            Forms submitted by virtual websites are dispatched to Express REST routes emulating classic CGI-BIN scripts:
+          </p>
+
+          <h4><code>POST /api/xserver/cgi/guestbook</code></h4>
+          <p>Appends an entry to the Cyberia guestbook. Requires fields: <code>name</code>, <code>email</code>, <code>homepage</code>, and <code>message</code>.</p>
+
+          <h4><code>POST /api/xserver/cgi/comment</code></h4>
+          <p>Adds a comment to a Slashdot story. Requires fields: <code>storyId</code>, <code>author</code>, <code>title</code>, and <code>body</code>.</p>
+
+          <h4><code>POST /api/xserver/pages</code></h4>
+          <p>Publishes a custom user website from Composer into Xserver's in-memory storage, assigning a unique slug accessible under <code>http://xserver.local/pages/:slug</code>.</p>
+        </div>
+      </section>
+
+      <!-- 5. COMPOSER GUIDE -->
+      <section class="retro-box" id="composer-guide">
+        <div class="box-header">5. NETSCAPE COMPOSER (HTML BUILDER)</div>
+        <div class="box-body">
+          <p>
+            Netscape Composer (located in <code>src/components/ComposerView.tsx</code>) enables users to write raw HTML 4.01 markup with live WYSIWYG previewing.
+          </p>
+          <ul style="padding-left:18px;font-size:11px;">
+            <li>Pre-populated retro templates (Personal Homepage, Software Portal, Fan Club).</li>
+            <li>Instant live preview iframe.</li>
+            <li>One-click publication to Xserver with instant visitor counter integration.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 6. TROUBLESHOOTING -->
+      <section class="retro-box" id="troubleshooting">
+        <div class="box-header gray-hdr">6. TROUBLESHOOTING &amp; COMMON ISSUES</div>
+        <div class="box-body">
+
+          <h4>Port 3000 Already in Use</h4>
+          <p>If another service is occupying port 3000, specify a custom port:</p>
+          <pre style="background:#000;color:#0f0;padding:6px;font-family:Courier New;font-size:11px;">PORT=3005 npm run dev</pre>
+
+          <h4>Web Audio Autoplay Policy</h4>
+          <p>Modern browsers block audio autoplay until user interaction. Click anywhere inside the Netscapeit window to permit audio before toggling dial-up sound effects.</p>
+
+          <h4>Iframe Navigation Restrictions</h4>
+          <p>External websites that send an <code>X-Frame-Options: DENY</code> header or restrictive <code>Content-Security-Policy</code> cannot be embedded directly in an iframe. Netscapeit's proxy route strips frame-busting headers for testing environments.</p>
+
+        </div>
+      </section>
+
+      <!-- 7. FAQ -->
+      <section class="retro-box" id="faq">
+        <div class="box-header">7. EXTENDED FREQUENTLY ASKED QUESTIONS</div>
+        <div class="box-body">
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I deploy this to netscapeit.org?</span>
+              <span class="indicator">[+]</span>
+            </div>
+            <div class="faq-answer" style="display:none;">
+              The official portal files in <code>website/</code> are static HTML, CSS, and vanilla JS. You can deploy them directly to any static host (Cloudflare Pages, Vercel, Netlify, or GitHub Pages) by setting the publish directory to <code>website</code>.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>How do I deploy the browser web app to netscp.netscapeit.org?</span>
+              <span class="indicator">[+]</span>
+            </div>
+            <div class="faq-answer" style="display:none;">
+              The browser web app is deployed as a container or Node service running <code>server.ts</code>. In Google Cloud Run or Docker, build using the included Dockerfile/package.json and bind your custom subdomain <code>netscp.netscapeit.org</code> to the service.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>Can I contribute new retro virtual sites to Xserver?</span>
+              <span class="indicator">[+]</span>
+            </div>
+            <div class="faq-answer" style="display:none;">
+              Yes! Open <code>xserver/sites.ts</code>, add your site generator function, register its domain in the router table, and submit a pull request to <code>https://github.com/orangePdb/ntscapeit</code>.
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-top">
+      <div class="footer-col" style="flex:2;">
+        <h4>NETSCAPEIT DOCUMENTATION MANUAL</h4>
+        <p style="color:#b0cce8;">Published for developers and users of the Netscapeit suite.</p>
+      </div>
+      <div class="footer-col" style="flex:1;">
+        <h4>QUICK LINKS</h4>
+        <ul>
+          <li><a href="index.html">Portal Home</a></li>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="https://netscp.netscapeit.org" target="_blank">netscp Web App</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>&copy; 1999–2026 <b>Netscapeit Project</b> &bull; Maintained by <b>orangePdb</b>.</div>
+      <div>Official Site: <b>netscapeit.org</b></div>
+    </div>
+  </footer>
+
+</div>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
